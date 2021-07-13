@@ -1,4 +1,4 @@
-import type Element from 'src/element';
+import Element from 'src/element';
 import { createCanvas } from 'src/utils/canvas';
 
 export namespace LifeCycle {
