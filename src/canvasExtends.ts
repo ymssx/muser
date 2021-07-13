@@ -6,7 +6,8 @@ export default class CanvasProxy {
     this.element = element;
   }
 
-  paint() {
+  paint(props = {}, config = {}) {
+    this.element.$paintWithProps(props, config);
     return this;
   }
 }

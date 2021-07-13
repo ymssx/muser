@@ -20,7 +20,7 @@ export default class Updater {
       cancelAnimationFrame(this.updateTicket);
     }
     this.updateTicket = requestAnimationFrame(() => {
-      this.updatePool.forEach(element => {
+      this.updatePool.forEach((element) => {
         updateElementTree(element);
         this.layer.directPaint(element);
       });
@@ -43,11 +43,12 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
 };
 
 export const updateElementTree = (root: Element) => {
+  // if conponent is not stale, skip rerender
   if (!root.$.stale) {
     return;
   }
 
-  root.$.childs.forEach(element => {
+  root.$.childs.forEach((element) => {
     updateElementTree(element);
   });
 

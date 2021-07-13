@@ -6,6 +6,6 @@ export namespace Default {
       width: 0,
       height: 0,
       cache: true,
-    }
+    };
   }
 }

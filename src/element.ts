@@ -1,15 +1,20 @@
 import { Data, CanvasElement } from 'src/const/common';
-import { ElementConfig } from 'src/const/element';
+import { ElementConfig, ElementConfigExtend } from 'src/const/element';
 import { LifeCycle } from 'src/lifecycle';
 import { Default } from 'src/const/default';
 import { createCanvas } from 'src/utils/canvas';
-import { getChildProxy } from 'src/utils/element';
+import { getChildProxy, getPropsProxy } from 'src/utils/element';
+import { hasChangeProps } from 'src/utils/common';
+
 interface ElementPrivateProps {
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
   tempChildStack: Element[];
   childs: Element[];
   stale: boolean; // if component need update
+  hasInit: boolean; // if the component rendered for the first time
+  dependence: Data;
+  isAnsysingDependence: boolean;
 }
 
 export default abstract class Element {
@@ -21,7 +26,7 @@ export default abstract class Element {
 
   /**
    * private status of component
-   * do not use '$' to name your componet methods
+   * do not use '$' to name your component methods
    */
   $: ElementPrivateProps = {
     elPainterMap: {},
@@ -29,7 +34,44 @@ export default abstract class Element {
     tempChildStack: [],
     childs: [],
     stale: false,
+    hasInit: false,
+    isAnsysingDependence: false,
+    dependence: {},
   };
+
+  $isWorthToUpdate(props: Data) {
+    if (!this.$.hasInit) return true;
+
+    for (const key in props) {
+      if (this.$.dependence.hasOwnProperty(key)) {
+        const res = hasChangeProps(props[key], this.$.dependence[key]);
+        if (res) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  get $isChildsStale() {
+    for (const name in this.$.childs) {
+      let el = this.$.childs[name];
+      if (el.$.stale) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  $paintWithProps(props: Data, config: ElementConfigExtend) {
+    Object.assign(this.props, props);
+
+    if (this.$.stale || this.$isChildsStale || this.$isWorthToUpdate(props)) {
+      return this.$paint();
+    }
+  }
+
+  $paint() {}
 
   get context() {
     return this.canvas.getContext('2d');
@@ -40,9 +82,9 @@ export default abstract class Element {
   }
 
   constructor(props: Data = {}, config: ElementConfig = Default.Element.config) {
-    this.props = props;
+    this.props = getPropsProxy(props, this);
     this.config = config;
-  };
+  }
 
   abstract paint(): void;
 }
