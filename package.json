@@ -13,7 +13,7 @@
     "prebuild": "npm run clean",
     "tsbuild": "tsc -p ./tsconfig.build.json",
     "build": "webpack",
-    "postbuild": "prettier --loglevel=silent --write \"./src/**/*.ts\"",
+    "postbuild": "npm run prettier",
     "release": "echo \"have no script yet...\" && exit 1"
   },
   "repository": {
