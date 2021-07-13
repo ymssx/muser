@@ -1,4 +1,4 @@
-import { Muse, Element } from "../src/index";
+import { Muse, Element } from '../src/index';
 
 class Box extends Element {
   constructor() {

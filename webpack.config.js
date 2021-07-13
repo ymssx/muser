@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-undef
 module.exports = {
-  mode: "development",
-  entry: "./test/index.js",
+  mode: 'development',
+  entry: './test/index.ts',
   output: {
-    filename: "index.js",
+    filename: 'index.js'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -11,7 +12,7 @@ module.exports = {
     rules: [{
       test: /\.tsx?$/,
       use: 'ts-loader',
-      exclude: '/node_modules',
+      exclude: '/node_modules'
     }]
   },
   plugins: []
