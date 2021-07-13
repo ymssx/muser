@@ -1,4 +1,4 @@
-import Element, { PROP } from 'src/element';
+import Element from 'src/element';
 import Layer from 'src/layer';
 
 export default class Updater {
@@ -34,7 +34,7 @@ export const rigistUpdate = () => {};
 export const canDirectUpdate = (element: Element) => false;
 
 export const signUpdateChain = (leaf: Element, updater: Updater) => {
-  leaf[PROP].stale = true;
+  leaf.$.stale = true;
   if (canDirectUpdate(leaf)) {
     updater.add(leaf);
   } else if (leaf.father) {
@@ -43,11 +43,11 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
 };
 
 export const updateElementTree = (root: Element) => {
-  if (!root[PROP].stale) {
+  if (!root.$.stale) {
     return;
   }
 
-  root[PROP].childs.forEach(element => {
+  root.$.childs.forEach(element => {
     updateElementTree(element);
   });
 

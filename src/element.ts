@@ -4,8 +4,6 @@ import { LifeCycle } from 'src/lifecycle';
 import { Default } from 'src/const/default';
 import { createCanvas } from 'src/utils/canvas';
 import { getChildProxy } from 'src/utils/element';
-
-export const PROP = '__PRIVATE_PROP__';
 interface ElementPrivateProps {
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
@@ -21,7 +19,11 @@ export default abstract class Element {
   public canvas: CanvasElement = createCanvas(this.config.width, this.config.height);
   public father: Element | null = null;
 
-  private [PROP]: ElementPrivateProps = {
+  /**
+   * private status of component
+   * do not use '$' to name your componet methods
+   */
+  $: ElementPrivateProps = {
     elPainterMap: {},
     isCollectingChilds: false,
     tempChildStack: [],
