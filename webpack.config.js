@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   mode: 'development',
-  entry: './test/index.ts',
+  entry: './test/index.js',
   output: {
     filename: 'index.js'
   },
