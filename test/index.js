@@ -1,4 +1,4 @@
-import Element from "src/element";
+import Yami, { Element } from "dist/index";
 
 class Box extends Element {
   constructor() {
@@ -41,3 +41,6 @@ class Test extends Element {
       .paint({ x: 10, y: 20 });
   }
 }
+
+const canvas = document.querySelector('#canvas');
+const layer = new Yami();
