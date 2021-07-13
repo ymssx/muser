@@ -45,6 +45,8 @@ class Test extends Element {
 const canvas = document.querySelector('#canvas');
 const muse = new Muse();
 const layer = muse.createLayer(canvas);
-layer.addChilds(
-  new Test(),
-);
+layer.addChilds({
+  root: new Test(),
+});
+console.log(layer);
+console.log(layer.childs.root);

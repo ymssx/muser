@@ -27,7 +27,7 @@ export const getChildProxy = (elementMap: { [name: string]: Element }, father: E
           father.$.tempChildStack.push(element);
         }
 
-        return elementMap[name];
+        return father.$.elPainterMap[name];
       },
     }
   );

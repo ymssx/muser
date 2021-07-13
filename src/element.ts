@@ -10,14 +10,15 @@ interface ElementPrivateProps {
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
   tempChildStack: Element[];
-  childs: Element[];
+  childList: Element[];
+  childs: { [name: string]: Element };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
   dependence: Data;
   isAnsysingDependence: boolean;
 }
 
-export default abstract class Element {
+export default class Element {
   public props: Data = {};
   public data: Data = {};
   public config: ElementConfig = Default.Element.config;
@@ -32,7 +33,8 @@ export default abstract class Element {
     elPainterMap: {},
     isCollectingChilds: false,
     tempChildStack: [],
-    childs: [],
+    childList: [],
+    childs: {},
     stale: false,
     hasInit: false,
     isAnsysingDependence: false,
@@ -54,8 +56,8 @@ export default abstract class Element {
   }
 
   get $isChildsStale() {
-    for (const name in this.$.childs) {
-      let el = this.$.childs[name];
+    for (const name in this.$.childList) {
+      const el = this.$.childList[name];
       if (el.$.stale) {
         return true;
       }
@@ -78,13 +80,15 @@ export default abstract class Element {
   }
 
   set childs(elementMap: { [name: string]: Element }) {
-    this.childs = getChildProxy(elementMap, this);
+    this.$.childs = getChildProxy(elementMap, this);
+  }
+
+  get childs() {
+    return this.$.childs;
   }
 
   constructor(props: Data = {}, config: ElementConfig = Default.Element.config) {
     this.props = getPropsProxy(props, this);
     this.config = config;
   }
-
-  abstract paint(): void;
 }

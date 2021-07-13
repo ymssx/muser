@@ -6,8 +6,8 @@ export default class Muse {
 
   constructor() {}
 
-  createLayer(element: CanvasElement) {
-    const layer = new Layer(element);
+  createLayer(canvas: CanvasElement) {
+    const layer = new Layer(canvas);
     this.layers.push(layer);
     return layer;
   }

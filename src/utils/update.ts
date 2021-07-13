@@ -48,9 +48,9 @@ export const updateElementTree = (root: Element) => {
     return;
   }
 
-  root.$.childs.forEach((element) => {
+  root.$.childList.forEach((element) => {
     updateElementTree(element);
   });
 
-  root.paint();
+  root.$paint();
 };
