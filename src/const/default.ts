@@ -1,4 +1,4 @@
-import { ElementConfig } from "src/const/element";
+import { ElementConfig } from './element';
 
 export namespace Default {
   export namespace Element {

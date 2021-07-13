@@ -1,4 +1,4 @@
-import Element from "src/element";
+import Element from './element';
 
 export default class CanvasProxy {
   element: Element;

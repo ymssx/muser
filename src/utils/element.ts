@@ -1,6 +1,6 @@
-import Element from "src/element";
-import CanvasProxy from "src/canvasExtends";
-import { Data } from "src/const/common";
+import Element from '../element';
+import CanvasProxy from '../canvasExtends';
+import { Data } from '../const/common';
 
 export const bindElements = (father: Element, children: Element) => {
   children.father = father;
@@ -9,10 +9,7 @@ export const bindElements = (father: Element, children: Element) => {
 /**
  * a proxy of origin component
  */
-export const getChildProxy = (
-  elementMap: { [name: string]: Element },
-  father: Element
-) => {
+export const getChildProxy = (elementMap: { [name: string]: Element }, father: Element) => {
   return new Proxy(
     {},
     {

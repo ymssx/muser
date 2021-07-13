@@ -1,5 +1,5 @@
-import Element from "src/element";
-import { createCanvas } from "src/utils/canvas";
+import Element from './element';
+import { createCanvas } from './utils/canvas';
 
 export namespace LifeCycle {
   const defaultBeforeCreated = (element: Element) => {

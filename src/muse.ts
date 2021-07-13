@@ -1,5 +1,5 @@
-import { CanvasElement } from "src/const/common";
-import Layer from "src/layer";
+import { CanvasElement } from './const/common';
+import Layer from './layer';
 
 export default class Muse {
   layers: Layer[] = [];

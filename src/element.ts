@@ -1,10 +1,10 @@
-import { Data, CanvasElement } from "src/const/common";
-import { ElementConfig, ElementConfigExtend } from "src/const/element";
-import { LifeCycle } from "src/lifecycle";
-import { Default } from "src/const/default";
-import { createCanvas } from "src/utils/canvas";
-import { getChildProxy, getPropsProxy } from "src/utils/element";
-import { hasChangeProps } from "src/utils/common";
+import { Data, CanvasElement } from './const/common';
+import { ElementConfig, ElementConfigExtend } from './const/element';
+import { LifeCycle } from './lifecycle';
+import { Default } from './const/default';
+import { createCanvas } from './utils/canvas';
+import { getChildProxy, getPropsProxy } from './utils/element';
+import { hasChangeProps } from './utils/common';
 
 interface ElementPrivateProps {
   elPainterMap: { [name: string]: Function };
@@ -21,10 +21,7 @@ export default abstract class Element {
   public props: Data = {};
   public data: Data = {};
   public config: ElementConfig = Default.Element.config;
-  public canvas: CanvasElement = createCanvas(
-    this.config.width,
-    this.config.height
-  );
+  public canvas: CanvasElement = createCanvas(this.config.width, this.config.height);
   public father: Element | null = null;
 
   /**
@@ -77,17 +74,14 @@ export default abstract class Element {
   $paint() {}
 
   get context() {
-    return this.canvas.getContext("2d");
+    return this.canvas.getContext('2d');
   }
 
   set childs(elementMap: { [name: string]: Element }) {
     this.childs = getChildProxy(elementMap, this);
   }
 
-  constructor(
-    props: Data = {},
-    config: ElementConfig = Default.Element.config
-  ) {
+  constructor(props: Data = {}, config: ElementConfig = Default.Element.config) {
     this.props = getPropsProxy(props, this);
     this.config = config;
   }

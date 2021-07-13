@@ -1,4 +1,4 @@
-import Yami, { Element } from "dist/index";
+import { Muse, Element } from "../src/index";
 
 class Box extends Element {
   constructor() {
@@ -43,4 +43,4 @@ class Test extends Element {
 }
 
 const canvas = document.querySelector('#canvas');
-const layer = new Yami();
+const layer = new Muse();
