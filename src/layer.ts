@@ -1,5 +1,5 @@
-import { CanvasElement } from 'src/const/common';
-import Element from 'src/element';
+import { CanvasElement } from "src/const/common";
+import Element from "src/element";
 
 export default class Layer {
   public canvas: CanvasElement;

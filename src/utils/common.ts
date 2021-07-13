@@ -1,4 +1,4 @@
-import { Data } from 'src/const/common';
+import { Data } from "src/const/common";
 
 /**
  * @param props new object
@@ -13,7 +13,7 @@ export const hasChangeProps = (props: unknown, old: unknown): boolean => {
     return true;
   }
 
-  if (typeof props === 'object' && typeof old === 'object') {
+  if (typeof props === "object" && typeof old === "object") {
     for (const key in props) {
       const propsValue = (props as Data)[key];
       const oldValue = (old as Data)[key];
@@ -22,7 +22,7 @@ export const hasChangeProps = (props: unknown, old: unknown): boolean => {
         return true;
       }
       // both have common key
-      if (typeof propsValue === 'object') {
+      if (typeof propsValue === "object") {
         const res = hasChangeProps(propsValue, oldValue);
         if (res) {
           return true;

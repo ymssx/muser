@@ -11,7 +11,7 @@
     "clean": "rm -rf ./dist",
     "prebuild": "npm run clean",
     "build": "tsc -p ./tsconfig.build.json",
-    "postbuild": "prettier --loglevel=silent --write \"./dist/**/*.ts\"",
+    "postbuild": "prettier --loglevel=silent --write \"./src/**/*.ts\"",
     "release": "echo \"have no script yet...\" && exit 1"
   },
   "repository": {

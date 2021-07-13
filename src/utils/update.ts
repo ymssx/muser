@@ -1,5 +1,5 @@
-import Element from 'src/element';
-import Layer from 'src/layer';
+import Element from "src/element";
+import Layer from "src/layer";
 
 export default class Updater {
   private layer: Layer;
