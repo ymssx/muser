@@ -14,8 +14,10 @@ export default class Muse {
   }
 
   paint() {
+    const paintList: Promise<void>[] = [];
     this.layers.forEach((layer) => {
-      layer.$paint();
+      paintList.push(layer.$paint());
     });
+    return Promise.all(paintList);
   }
 }

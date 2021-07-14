@@ -76,7 +76,9 @@ export default class Element {
     }
   }
 
-  $paint() {}
+  $paint(): Promise<void> {
+    return new Promise(() => {});
+  }
 
   get context() {
     return this.canvas.getContext('2d');

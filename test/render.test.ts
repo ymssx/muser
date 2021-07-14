@@ -5,6 +5,7 @@
 import { Muse } from '../src/index';
 import Wrapper from './components/wrapper';
 import { createCanvas } from '../src/utils/canvas';
+import { paintRecord, record } from './utils/record';
 
 test('is-browser-env', () => {
   expect(window).not.toBeUndefined();
@@ -26,8 +27,14 @@ layer.addChilds({
   root: new Wrapper(),
 });
 
-muse.paint();
-
 test('test', () => {
   expect(layer.childs).not.toBeUndefined();
 });
+
+muse
+  .paint()
+  .then(() => {
+    test('test paint sequence', () => {
+      
+    });
+  });
