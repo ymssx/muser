@@ -1,4 +1,3 @@
-import { ElementConfigExtend } from './const/element';
 import { Data } from './const/common';
 import Element from './element';
 
@@ -12,8 +11,8 @@ export default class CanvasProxy {
     return this;
   }
 
-  paint(props: Data = {}, config: ElementConfigExtend = {}) {
-    this.element.$paintWithProps(props, config);
+  paint(props: Data = {}) {
+    this.element.$paintWithProps(props);
     return this;
   }
 }

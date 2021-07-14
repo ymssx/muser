@@ -6,11 +6,14 @@ import { createCanvas } from './utils/canvas';
 import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
 import { hasChangeProps } from './utils/common';
 import CanvasProxy from './canvasExtends';
+import Updater from './utils/update';
 
 interface ElementPrivateProps {
   canvas: CanvasElement | null;
   father: Element | null;
-  layer: Element | null;
+  root: Element | null;
+  updater: Updater;
+  props: Data;
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
   tempChildStack: Element[];
@@ -24,29 +27,10 @@ interface ElementPrivateProps {
 }
 
 export default class Element {
+  $: ElementPrivateProps;
   public props: Data = {};
   public data: Data = {};
   public config: ElementConfig = Default.Element.config;
-
-  /**
-   * private status of component
-   * do not use '$' to name your component methods
-   */
-  $: ElementPrivateProps = {
-    canvas: null,
-    father: null,
-    layer: null,
-    elPainterMap: {},
-    isCollectingChilds: false,
-    tempChildStack: [],
-    childList: [],
-    childMap: {},
-    childs: {},
-    stale: false,
-    hasInit: false,
-    isAnsysingDependence: false,
-    dependence: {},
-  };
 
   $isWorthToUpdate(props: Data) {
     if (!this.$.hasInit) return true;
@@ -72,7 +56,7 @@ export default class Element {
     return false;
   }
 
-  $paintWithProps(props: Data, config: ElementConfigExtend) {
+  $paintWithProps(props: Data) {
     Object.assign(this.props, props);
 
     if (this.$.stale || this.$isChildsStale || this.$isWorthToUpdate(props)) {
@@ -83,6 +67,8 @@ export default class Element {
   $paint(): Promise<void> {
     return new Promise(() => {});
   }
+
+  $directPaint(element: Element, config?: ElementConfig) {}
 
   get context() {
     return this.canvas.getContext('2d');
@@ -111,14 +97,36 @@ export default class Element {
     return this.$.canvas as CanvasElement;
   }
 
-  constructor(props: Data = {}, config: ElementConfig = Default.Element.config, canvas?: CanvasElement) {
-    this.props = getPropsProxy(props, this);
+  setData() {}
+
+  constructor(config: ElementConfig = Default.Element.config, canvas?: CanvasElement) {
+    /**
+     * private status of component
+     * do not use '$' to name your component methods
+     */
+    this.$ = {
+      canvas: null,
+      father: null,
+      root: null,
+      updater: new Updater(this),
+      props: {},
+      elPainterMap: {},
+      isCollectingChilds: false,
+      tempChildStack: [],
+      childList: [],
+      childMap: {},
+      childs: {},
+      stale: false,
+      hasInit: false,
+      isAnsysingDependence: false,
+      dependence: {},
+    };
+
+    this.props = getPropsProxy(this);
     this.config = config;
 
-    if (canvas) {
-      this.canvas = canvas;
-    } else if (config.cache) {
-      this.canvas = createCanvas(this.config.width, this.config.height);
+    if (config.cache) {
+      this.canvas = canvas ?? createCanvas(this.config.width, this.config.height);
     }
   }
 }

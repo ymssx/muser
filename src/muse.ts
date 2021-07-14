@@ -1,22 +1,18 @@
 import { CanvasElement, Data } from './const/common';
 import { ElementConfig } from './const/element';
-import Layer from './layer';
+import Element from './element';
 
 export default class Muse {
-  layers: Layer[] = [];
+  childs: Element[] = [];
 
-  constructor() {}
-
-  createLayer(canvas: CanvasElement, props: Data, config: ElementConfig) {
-    const layer = new Layer(props, config, canvas);
-    this.layers.push(layer);
-    return layer;
+  constructor(childs: Element[]) {
+    this.childs = childs;
   }
 
   paint() {
     const paintList: Promise<void>[] = [];
-    this.layers.forEach((layer) => {
-      paintList.push(layer.$paint());
+    this.childs.forEach((element) => {
+      paintList.push(element.$paint());
     });
     return Promise.all(paintList);
   }

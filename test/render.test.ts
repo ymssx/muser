@@ -17,18 +17,16 @@ test('can-create-canvas', () => {
   expect(canvas).not.toBeUndefined();
 });
 
-const muse = new Muse();
-const layer = muse.createLayer(canvas, {}, {
-  width: 300,
-  height: 200,
-});
-
-layer.addChilds({
-  root: new Wrapper(),
-});
+const muse = new Muse([
+  new Wrapper({
+    canvas,
+    width: 300,
+    height: 200,
+  }),
+]);
 
 test('test', () => {
-  expect(layer.childs).not.toBeUndefined();
+  expect(muse.childs).not.toBeUndefined();
 });
 
 muse

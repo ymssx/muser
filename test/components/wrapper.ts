@@ -2,8 +2,8 @@ import { Element } from '../../src/index';
 import Box from './box';
 
 export default class Test extends Element {
-  constructor() {
-    super();
+  constructor(config: any) {
+    super(config);
     this.childMap = {
       box1: new Box(),
       box2: new Box(),

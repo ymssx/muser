@@ -1,13 +1,12 @@
 import Element from '../element';
-import Layer from '../layer';
 
 export default class Updater {
-  private layer: Layer;
+  private element: Element;
   private updatePool: Set<Element> = new Set();
   private updateTicket: number | null = null;
 
-  constructor(layer: Layer) {
-    this.layer = layer;
+  constructor(element: Element) {
+    this.element = element;
   }
 
   add(element: Element) {
@@ -22,7 +21,7 @@ export default class Updater {
     this.updateTicket = requestAnimationFrame(() => {
       this.updatePool.forEach((element) => {
         updateElementTree(element);
-        this.layer.directPaint(element);
+        this.element.$directPaint(element);
       });
       this.updatePool.clear();
     });
