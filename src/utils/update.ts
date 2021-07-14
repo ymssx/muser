@@ -37,8 +37,8 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
   leaf.$.stale = true;
   if (canDirectUpdate(leaf)) {
     updater.add(leaf);
-  } else if (leaf.father) {
-    signUpdateChain(leaf.father, updater);
+  } else if (leaf.$.father) {
+    signUpdateChain(leaf.$.father, updater);
   }
 };
 

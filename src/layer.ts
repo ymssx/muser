@@ -3,8 +3,6 @@ import { ElementConfig } from './const/element';
 import Element from './element';
 
 export default class Layer extends Element {
-  public canvas: CanvasElement;
-
   constructor(canvas: CanvasElement) {
     super();
     this.canvas = canvas;
@@ -12,7 +10,7 @@ export default class Layer extends Element {
 
   directPaint(element: Element, config?: ElementConfig) {}
 
-  addChilds(childs: { [name: string]: Element }) {
-    this.childs = childs;
+  addChilds(childMap: { [name: string]: Element }) {
+    this.childMap = childMap;
   }
 }

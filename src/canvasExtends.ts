@@ -1,3 +1,5 @@
+import { ElementConfigExtend } from './const/element';
+import { Data } from './const/common';
 import Element from './element';
 
 export default class CanvasProxy {
@@ -6,7 +8,11 @@ export default class CanvasProxy {
     this.element = element;
   }
 
-  paint(props = {}, config = {}) {
+  rotate({ angle: number = 0 }) {
+    return this;
+  }
+
+  paint(props: Data = {}, config: ElementConfigExtend = {}) {
     this.element.$paintWithProps(props, config);
     return this;
   }

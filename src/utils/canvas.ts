@@ -1,7 +1,7 @@
 import { CanvasElement } from '../const/common';
 
 export const createCanvas = (width: number, height: number): CanvasElement => {
-  if (OffscreenCanvas) {
+  if (window?.OffscreenCanvas) {
     return new OffscreenCanvas(width, height);
   }
   const canvas = document.createElement('canvas');

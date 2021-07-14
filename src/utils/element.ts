@@ -3,7 +3,7 @@ import CanvasProxy from '../canvasExtends';
 import { Data } from '../const/common';
 
 export const bindElements = (father: Element, children: Element) => {
-  children.father = father;
+  children.$.father = father;
 };
 
 /**
@@ -53,4 +53,11 @@ export const getPropsProxy = (props: Data, element: Element) => {
       return true;
     },
   });
+};
+
+export const bindTree = (elementMap: { [name: string]: Element }, father: Element) => {
+  for (const name in elementMap) {
+    const element = elementMap[name];
+    bindElements(father, element);
+  }
 };
