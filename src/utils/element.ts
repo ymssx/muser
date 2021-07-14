@@ -1,6 +1,5 @@
 import Element from '../element';
 import CanvasProxy from '../canvasExtends';
-import { Data } from '../const/common';
 
 export const bindElements = (father: Element, children: Element) => {
   children.$.father = father;

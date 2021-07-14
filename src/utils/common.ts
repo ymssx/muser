@@ -5,7 +5,7 @@ import { Data } from '../const/common';
  * @param old origin object
  * @returns is object updated
  */
-export const hasChangeProps = (props: unknown, old: unknown): boolean => {
+export const objectDiff = (props: unknown, old: unknown): boolean => {
   if (props === old) {
     return false;
   }
@@ -23,7 +23,7 @@ export const hasChangeProps = (props: unknown, old: unknown): boolean => {
       }
       // both have common key
       if (typeof propsValue === 'object') {
-        const res = hasChangeProps(propsValue, oldValue);
+        const res = objectDiff(propsValue, oldValue);
         if (res) {
           return true;
         }

@@ -4,8 +4,7 @@ import { LifeCycle } from './lifecycle';
 import { Default } from './const/default';
 import { createCanvas } from './utils/canvas';
 import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
-import { hasChangeProps } from './utils/common';
-import Updater from './utils/update';
+import { Updater, isWorthToUpdate } from './update/index';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
 
 export default class Element {
@@ -14,34 +13,10 @@ export default class Element {
   public data: Data = {};
   public config: ElementConfig = Default.Element.config;
 
-  $isWorthToUpdate(props: Data) {
-    if (!this.$.hasInit) return true;
-
-    for (const key in props) {
-      if (this.$.dependence.hasOwnProperty(key)) {
-        const res = hasChangeProps(props[key], this.$.dependence[key]);
-        if (res) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  get $isChildsStale() {
-    for (const name in this.$.childList) {
-      const el = this.$.childList[name];
-      if (el.$.stale) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   $paintWithProps(props: Data) {
     Object.assign(this.props, props);
 
-    if (this.$.stale || this.$isChildsStale || this.$isWorthToUpdate(props)) {
+    if (isWorthToUpdate(props, this)) {
       return this.$paint();
     }
   }
