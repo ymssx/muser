@@ -5,26 +5,8 @@ import { Default } from './const/default';
 import { createCanvas } from './utils/canvas';
 import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
 import { hasChangeProps } from './utils/common';
-import CanvasProxy from './canvasExtends';
 import Updater from './utils/update';
-
-interface ElementPrivateProps {
-  canvas: CanvasElement | null;
-  father: Element | null;
-  root: Element | null;
-  updater: Updater;
-  props: Data;
-  elPainterMap: { [name: string]: Function };
-  isCollectingChilds: boolean;
-  tempChildStack: Element[];
-  childList: Element[];
-  childMap: { [name: string]: Element };
-  childs: { [name: string]: (props: Data, config: ElementConfigExtend) => CanvasProxy };
-  stale: boolean; // if component need update
-  hasInit: boolean; // if the component rendered for the first time
-  dependence: Data;
-  isAnsysingDependence: boolean;
-}
+import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
 
 export default class Element {
   $: ElementPrivateProps;
@@ -104,23 +86,7 @@ export default class Element {
      * private status of component
      * do not use '$' to name your component methods
      */
-    this.$ = {
-      canvas: null,
-      father: null,
-      root: null,
-      updater: new Updater(this),
-      props: {},
-      elPainterMap: {},
-      isCollectingChilds: false,
-      tempChildStack: [],
-      childList: [],
-      childMap: {},
-      childs: {},
-      stale: false,
-      hasInit: false,
-      isAnsysingDependence: false,
-      dependence: {},
-    };
+    this.$ = initElementPrivateProps(this);
 
     this.props = getPropsProxy(this);
     this.config = config;
