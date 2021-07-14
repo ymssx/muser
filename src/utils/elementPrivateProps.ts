@@ -1,7 +1,7 @@
 import { CanvasElement, Data } from '../const/common';
 import { ElementConfigExtend } from '../const/element';
 import Element from '../element';
-import Updater from './update';
+import Updater from '../update/update';
 import CanvasProxy from '../canvasExtends';
 
 export interface ElementPrivateProps {
