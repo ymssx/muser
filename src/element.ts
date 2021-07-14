@@ -10,10 +10,12 @@ import CanvasProxy from './canvasExtends';
 interface ElementPrivateProps {
   canvas: CanvasElement | null;
   father: Element | null;
+  layer: Element | null;
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
   tempChildStack: Element[];
   childList: Element[];
+  childMap: { [name: string]: Element };
   childs: { [name: string]: (props: Data, config: ElementConfigExtend) => CanvasProxy };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
@@ -33,10 +35,12 @@ export default class Element {
   $: ElementPrivateProps = {
     canvas: null,
     father: null,
+    layer: null,
     elPainterMap: {},
     isCollectingChilds: false,
     tempChildStack: [],
     childList: [],
+    childMap: {},
     childs: {},
     stale: false,
     hasInit: false,
@@ -87,6 +91,7 @@ export default class Element {
   // proxy of childs conponents, which returns a paint function
   set childMap(elementMap: { [name: string]: Element }) {
     bindTree(elementMap, this);
+    this.$.childMap = elementMap;
     this.$.childs = getChildProxy(elementMap, this);
   }
 
@@ -106,11 +111,13 @@ export default class Element {
     return this.$.canvas as CanvasElement;
   }
 
-  constructor(props: Data = {}, config: ElementConfig = Default.Element.config) {
+  constructor(props: Data = {}, config: ElementConfig = Default.Element.config, canvas?: CanvasElement) {
     this.props = getPropsProxy(props, this);
     this.config = config;
 
-    if (config.cache) {
+    if (canvas) {
+      this.canvas = canvas;
+    } else if (config.cache) {
       this.canvas = createCanvas(this.config.width, this.config.height);
     }
   }

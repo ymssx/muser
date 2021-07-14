@@ -1,5 +1,5 @@
-import { CanvasElement } from './const/common';
-import { ElementConfigExtend } from './const/element';
+import { CanvasElement, Data } from './const/common';
+import { ElementConfig } from './const/element';
 import Layer from './layer';
 
 export default class Muse {
@@ -7,8 +7,8 @@ export default class Muse {
 
   constructor() {}
 
-  createLayer(canvas: CanvasElement, config: ElementConfigExtend) {
-    const layer = new Layer(canvas);
+  createLayer(canvas: CanvasElement, props: Data, config: ElementConfig) {
+    const layer = new Layer(props, config, canvas);
     this.layers.push(layer);
     return layer;
   }

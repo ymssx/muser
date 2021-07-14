@@ -18,7 +18,7 @@ test('can-create-canvas', () => {
 });
 
 const muse = new Muse();
-const layer = muse.createLayer(canvas, {
+const layer = muse.createLayer(canvas, {}, {
   width: 300,
   height: 200,
 });
@@ -35,6 +35,6 @@ muse
   .paint()
   .then(() => {
     test('test paint sequence', () => {
-      
+
     });
   });

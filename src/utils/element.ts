@@ -1,9 +1,20 @@
 import Element from '../element';
 import CanvasProxy from '../canvasExtends';
+import Layer from 'src/layer';
 import { Data } from '../const/common';
 
 export const bindElements = (father: Element, children: Element) => {
   children.$.father = father;
+};
+
+export const bindElementsLayer = (elementMap: { [key: string]: Element }, layer: Layer) => {
+  for (const name in elementMap) {
+    const element = elementMap[name];
+    element.$.layer = layer;
+    if (element.$.childMap) {
+      bindElementsLayer(element.$.childMap, layer);
+    }
+  }
 };
 
 /**
