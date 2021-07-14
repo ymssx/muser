@@ -12,4 +12,10 @@ export default class Muse {
     this.layers.push(layer);
     return layer;
   }
+
+  paint() {
+    this.layers.forEach((layer) => {
+      layer.$paint();
+    });
+  }
 }

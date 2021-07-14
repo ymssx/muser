@@ -17,7 +17,7 @@ export const getChildProxy = (elementMap: { [name: string]: Element }, father: E
         const element = elementMap[name];
 
         if (!father.$.elPainterMap[name]) {
-          bindElements(father, element);
+          // bindElements(father, element);
           const ext = new CanvasProxy(element);
           // TODO
           father.$.elPainterMap[name] = ext.paint.bind(ext);

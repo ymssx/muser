@@ -26,7 +26,7 @@ layer.addChilds({
   root: new Wrapper(),
 });
 
-// muse.render();
+muse.paint();
 
 test('test', () => {
   expect(layer.childs).not.toBeUndefined();

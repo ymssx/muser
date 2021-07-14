@@ -4,7 +4,6 @@
   "description": "Framework to help you build complex canvas applications",
   "main": "dist/index.js",
   "scripts": {
-    "init": "jest --init",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "prettier": "prettier --single-quote --print-width 120 --parser typescript --write \"./src/**/*.ts\"",
     "jest": "jest --findRelatedTests",
