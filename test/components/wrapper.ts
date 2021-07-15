@@ -5,8 +5,8 @@ export default class Test extends Element {
   constructor(config: any) {
     super(config);
     this.childMap = {
-      box1: new Box(),
-      box2: new Box(),
+      box1: new Box({}),
+      box2: new Box({}),
     };
   }
 

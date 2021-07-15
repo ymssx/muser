@@ -53,6 +53,10 @@ const LRD = (element: Element, handler: (element: Element) => boolean): boolean 
   return stop;
 };
 
+/**
+ * we will obtain a render-tree while traversing the element-tree,
+ * which records the coverage relationship between elements.
+ */
 export const mountRenderTree = (element: Element) => {
   if (!element.$.father) return;
   LRD(element.$.father, (child) => {
