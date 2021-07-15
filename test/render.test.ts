@@ -29,10 +29,8 @@ test('test', () => {
   expect(muse.childs).not.toBeUndefined();
 });
 
-muse
-  .paint()
-  .then(() => {
-    test('test paint sequence', () => {
+muse.paint();
 
-    });
-  });
+test('test paint sequence', () => {
+
+});

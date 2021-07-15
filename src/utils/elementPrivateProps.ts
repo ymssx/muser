@@ -1,8 +1,9 @@
 import { CanvasElement, Data } from '../const/common';
 import { ElementConfigExtend } from '../const/element';
 import Element from '../element';
-import Updater from '../update/update';
+import Updater from '../render/updater';
 import CanvasProxy from '../canvasExtends';
+import RenderTree from '../render/renderTree';
 
 export interface ElementPrivateProps {
   canvas: CanvasElement | null;
@@ -20,24 +21,24 @@ export interface ElementPrivateProps {
   hasInit: boolean; // if the component rendered for the first time
   dependence: Data;
   isAnsysingDependence: boolean;
+  renderTree: RenderTree;
 }
 
-export const initElementPrivateProps = (element: Element) => {
-  return {
-    canvas: null,
-    father: null,
-    root: null,
-    updater: new Updater(element),
-    props: {},
-    elPainterMap: {},
-    isCollectingChilds: false,
-    tempChildStack: [],
-    childList: [],
-    childMap: {},
-    childs: {},
-    stale: false,
-    hasInit: false,
-    isAnsysingDependence: false,
-    dependence: {},
-  };
-};
+export const initElementPrivateProps = (element: Element) => ({
+  canvas: null,
+  father: null,
+  root: null,
+  updater: new Updater(element),
+  props: {},
+  elPainterMap: {},
+  isCollectingChilds: false,
+  tempChildStack: [],
+  childList: [],
+  childMap: {},
+  childs: {},
+  stale: true,
+  hasInit: false,
+  isAnsysingDependence: false,
+  dependence: {},
+  renderTree: new RenderTree(),
+});

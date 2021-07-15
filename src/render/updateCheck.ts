@@ -29,3 +29,8 @@ export const hasChangeProps = (props: Data, element: Element) => {
 export const isWorthToUpdate = (props: Data, element: Element) => {
   return element.$.stale || isChildsStale(element) || hasChangeProps(props, element);
 };
+
+export const setData = (newProps: Data, element: Element) => {
+  if (!hasChangeProps(newProps, element)) return;
+  element.$.updater.registUpdate();
+};

@@ -1,6 +1,5 @@
-import { CanvasElement, Data } from './const/common';
-import { ElementConfig } from './const/element';
 import Element from './element';
+import { updateElementTree } from './render/render';
 
 export default class Muse {
   childs: Element[] = [];
@@ -10,10 +9,8 @@ export default class Muse {
   }
 
   paint() {
-    const paintList: Promise<void>[] = [];
     this.childs.forEach((element) => {
-      paintList.push(element.$paint());
+      updateElementTree(element);
     });
-    return Promise.all(paintList);
   }
 }

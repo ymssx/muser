@@ -1,2 +1,2 @@
-export { default as Updater } from './update';
+export { default as Updater } from './updater';
 export { isWorthToUpdate } from './updateCheck';

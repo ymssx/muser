@@ -1,31 +1,33 @@
 import { Data, CanvasElement } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
-import { LifeCycle } from './lifecycle';
 import { Default } from './const/default';
 import { createCanvas } from './utils/canvas';
 import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
-import { Updater, isWorthToUpdate } from './update/index';
+import { isWorthToUpdate } from './render/index';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
+import { setData } from './render/updateCheck';
 
-export default class Element {
+export default abstract class Element {
   $: ElementPrivateProps;
-  public props: Data = {};
+  public props: Data;
   public data: Data = {};
   public config: ElementConfig = Default.Element.config;
+
+  abstract paint(): void;
 
   $paintWithProps(props: Data) {
     Object.assign(this.props, props);
 
     if (isWorthToUpdate(props, this)) {
-      return this.$paint();
+      return this.paint();
     }
   }
 
-  $paint(): Promise<void> {
-    return new Promise(() => {});
-  }
-
   $directPaint(element: Element, config?: ElementConfig) {}
+
+  public setData(newProps: Data) {
+    return setData(newProps, this);
+  }
 
   get context() {
     return this.canvas.getContext('2d');
@@ -49,14 +51,20 @@ export default class Element {
 
   get canvas(): CanvasElement {
     if (!this.config.cache) {
-      return (this.$.father as Element).canvas;
+      if (this.$.father) {
+        return this.$.father.canvas;
+      } else {
+        throw new Error('Root element must have a canvas instance');
+      }
     }
     return this.$.canvas as CanvasElement;
   }
 
-  setData() {}
-
-  constructor(config: ElementConfig = Default.Element.config, canvas?: CanvasElement) {
+  constructor(config: ElementConfigExtend, canvas?: CanvasElement) {
+    this.config = {
+      ...Default.Element.config,
+      ...config,
+    };
     /**
      * private status of component
      * do not use '$' to name your component methods
@@ -64,9 +72,8 @@ export default class Element {
     this.$ = initElementPrivateProps(this);
 
     this.props = getPropsProxy(this);
-    this.config = config;
 
-    if (config.cache) {
+    if (this.config.cache) {
       this.canvas = canvas ?? createCanvas(this.config.width, this.config.height);
     }
   }
