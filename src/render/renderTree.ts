@@ -6,7 +6,7 @@ export interface Position {
   w: number;
   h: number;
 }
-export const haveIntersection = (a: Position, b: Position) => {
+export const haveOverlay = (a: Position, b: Position) => {
   const atRightOrTop = (a: Position, b: Position) => {
     return a.x - b.x >= b.w || a.y - b.y >= b.h;
   };
@@ -22,48 +22,31 @@ export const getPosition = (element: Element): Position => {
   };
 };
 
-export default class RenderTree {
-  childs: Element[] = [];
-  add(element: Element) {
-    this.childs.push(element);
-  }
-}
-
-/**
- * preorder traversal
- */
-const DLR = (tree: Element, handler: (element: Element) => boolean) => {
-  handler(tree);
-  tree.$.childList.forEach((child) => {
-    DLR(child, handler);
-  });
-};
-
-/**
- * postorder traversal
- */
-const LRD = (element: Element, handler: (element: Element) => boolean): boolean => {
-  let stop = false;
-  element.$.renderTree.childs.forEach((child) => {
-    stop = stop || LRD(child, handler);
-  });
-  if (!stop) {
-    stop = stop || handler(element);
-  }
-  return stop;
-};
-
 /**
  * we will obtain a render-tree while traversing the element-tree,
  * which records the coverage relationship between elements.
  */
-export const mountRenderTree = (element: Element) => {
+
+/**
+ * preorder traversal
+ */
+export const DLR = (tree: Element, handler: (element: Element) => boolean) => {
+  const hint = handler(tree);
+  if (hint) {
+    tree.$.childList?.forEach((child) => {
+      DLR(child, handler);
+    });
+  }
+};
+
+export const checkOverlay = (element: Element) => {
   if (!element.$.father) return;
-  LRD(element.$.father, (child) => {
-    const checkRes = haveIntersection(getPosition(element), getPosition(child));
-    if (checkRes) {
-      child.$.renderTree.add(element);
-    }
-    return checkRes;
-  });
+  for (const brother of element.$.father.$.childList) {
+    if (brother === element) break;
+    DLR(brother, (child) => {
+      const checkRes = haveOverlay(getPosition(element), getPosition(child));
+      if (checkRes) child.$.cover.add(element);
+      return checkRes;
+    });
+  }
 };

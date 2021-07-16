@@ -23,3 +23,10 @@ export const updateElementTree = (root: Element) => {
   });
   root.paint();
 };
+
+const paintToFather = (element: Element) => {};
+
+export const directPaint = (element: Element) => {
+  paintToFather(element);
+  element.$.cover.forEach((coverEl) => directPaint(coverEl));
+};

@@ -1,4 +1,4 @@
-import { haveIntersection, Position } from "../src/render/renderTree";
+import { haveOverlay, Position } from "../src/render/renderTree";
 
 const checkList: [Position, Position, boolean][] = [
   [{ x: 0, y: 0, w: 2, h: 2 }, { x: 0, y: 0, w: 3, h: 2 }, true],
@@ -13,7 +13,7 @@ const checkList: [Position, Position, boolean][] = [
 ];
 
 checkList.forEach(([a, b, answer], index: number) => {
-  const res = haveIntersection(a, b);
+  const res = haveOverlay(a, b);
   test(`test ${index} group`, () => {
     expect(res).toBe(answer);
   });
