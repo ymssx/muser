@@ -31,8 +31,8 @@ export const getPosition = (element: Element): Position => {
  * preorder traversal
  */
 export const DLR = (tree: Element, handler: (element: Element) => boolean) => {
-  const hint = handler(tree);
-  if (hint) {
+  const hit = handler(tree);
+  if (hit) {
     tree.$.childList?.forEach((child) => {
       DLR(child, handler);
     });
