@@ -43,7 +43,7 @@ export const checkOverlay = (element: Element) => {
     if (brother === element) break;
     DLR(brother, (child) => {
       const checkRes = haveOverlay(getPosition(element), getPosition(child));
-      if (checkRes) child.$.cover.add(element);
+      if (checkRes) child.$.updater.addCoverElement(element);
       return checkRes;
     });
   }

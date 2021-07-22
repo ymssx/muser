@@ -28,5 +28,5 @@ const paintToFather = (element: Element) => {};
 
 export const directPaint = (element: Element) => {
   paintToFather(element);
-  element.$.cover.forEach((coverEl) => directPaint(coverEl));
+  element.$.updater.coverElements.forEach((coverEl) => directPaint(coverEl));
 };

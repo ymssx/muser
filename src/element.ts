@@ -15,16 +15,6 @@ export default abstract class Element {
 
   abstract paint(): void;
 
-  $paintWithProps(props: Data) {
-    Object.assign(this.props, props);
-
-    if (isWorthToUpdate(props, this)) {
-      return this.paint();
-    }
-  }
-
-  $directPaint(element: Element, config?: ElementConfig) {}
-
   public setData(newProps: Data) {
     return setData(newProps, this);
   }

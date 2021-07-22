@@ -20,7 +20,6 @@ export interface ElementPrivateProps {
   hasInit: boolean; // if the component rendered for the first time
   dependence: Data;
   isAnsysingDependence: boolean;
-  cover: Set<Element>; // elements which are cover on this
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -39,5 +38,4 @@ export const initElementPrivateProps = (element: Element) => ({
   hasInit: false,
   isAnsysingDependence: false,
   dependence: {},
-  cover: new Set<Element>(),
 });

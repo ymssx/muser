@@ -3,6 +3,8 @@ import CanvasProxy from '../canvasExtends';
 
 export const bindElements = (father: Element, children: Element) => {
   children.$.father = father;
+  // if father dont have a root element, father is the root
+  children.$.root = father.$.root || father;
 };
 
 export const bindElementsLayer = (elementMap: { [key: string]: Element }, element: Element) => {

@@ -12,7 +12,7 @@ export default class CanvasProxy {
   }
 
   paint(props: Data = {}) {
-    this.element.$paintWithProps(props);
+    // TODO
     return this;
   }
 }
