@@ -30,7 +30,7 @@ export default abstract class Element {
   }
 
   get context() {
-    return this.canvas.getContext('2d');
+    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
   }
 
   // proxy of childs conponents, which returns a paint function

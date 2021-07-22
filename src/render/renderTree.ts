@@ -27,9 +27,7 @@ export const getPosition = (element: Element): Position => {
  * which records the coverage relationship between elements.
  */
 
-/**
- * preorder traversal
- */
+// preorder traversal
 export const DLR = (tree: Element, handler: (element: Element) => boolean) => {
   const hit = handler(tree);
   if (hit) {
