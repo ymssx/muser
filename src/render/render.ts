@@ -13,7 +13,7 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
 };
 
 export const updateElementTree = (root: Element) => {
-  // if conponent is not stale, skip rerender
+  // if component is not stale, skip rerender
   if (!root.$.stale) {
     return;
   }

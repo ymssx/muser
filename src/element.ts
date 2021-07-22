@@ -23,7 +23,7 @@ export default abstract class Element {
     return this.canvas.getContext('2d') as CanvasRenderingContext2D;
   }
 
-  // proxy of childs conponents, which returns a paint function
+  // proxy of childs components, which returns a paint function
   set childMap(elementMap: { [name: string]: Element }) {
     bindTree(elementMap, this);
     this.$.childMap = elementMap;
