@@ -17,19 +17,19 @@ test('can-create-canvas', () => {
   expect(canvas).not.toBeUndefined();
 });
 
-const muse = new Muse([
-  new Wrapper({
-    canvas,
-    width: 300,
-    height: 200,
-  }),
-]);
+// const muse = new Muse([
+//   new Wrapper({
+//     canvas,
+//     width: 300,
+//     height: 200,
+//   }),
+// ]);
 
-test('test', () => {
-  expect(muse.childs).not.toBeUndefined();
-});
+// test('test', () => {
+//   expect(muse.childs).not.toBeUndefined();
+// });
 
-muse.paint();
+// muse.paint();
 
 test('test paint sequence', () => {
 

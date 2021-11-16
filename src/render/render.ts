@@ -17,14 +17,17 @@ export const updateElementTree = (root: Element) => {
   if (!root.$.stale) {
     return;
   }
-
-  root.$.childList.forEach((element) => {
-    updateElementTree(element);
-  });
   root.paint();
 };
 
-const paintToFather = (element: Element) => {};
+export const paintToFather = (element: Element, style: { x?: number; y?: number } = {}) => {
+  const elementContent = element.$.canvas;
+  const fatherContext = element.$.father?.context;
+  const { x = 0, y = 0 } = style;
+  if (elementContent) {
+    fatherContext?.drawImage(elementContent, x, y);
+  }
+};
 
 export const directPaint = (element: Element) => {
   paintToFather(element);

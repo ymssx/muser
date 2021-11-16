@@ -1,5 +1,6 @@
 import Element from '../element';
 import CanvasProxy from '../canvasExtends';
+import { Data } from 'src/const/common';
 
 export const bindElements = (father: Element, children: Element) => {
   children.$.father = father;
@@ -28,10 +29,8 @@ export const getChildProxy = (elementMap: { [name: string]: Element }, father: E
         const element = elementMap[name];
 
         if (!father.$.elPainterMap[name]) {
-          // bindElements(father, element);
           const ext = new CanvasProxy(element);
-          // TODO
-          father.$.elPainterMap[name] = ext.paint.bind(ext);
+          father.$.elPainterMap[name] = ext.updateProps.bind(ext);
         }
 
         if (father.$.isCollectingChilds) {
@@ -48,10 +47,10 @@ export const getPropsProxy = (element: Element) => {
   return new Proxy(
     {},
     {
-      get(props, key: string) {
+      get(originProps, key: string) {
         let res;
 
-        if (props.hasOwnProperty(key)) {
+        if (element.$.props.hasOwnProperty(key)) {
           res = element.$.props[key];
         }
 
@@ -74,4 +73,11 @@ export const bindTree = (elementMap: { [name: string]: Element }, father: Elemen
     const element = elementMap[name];
     bindElements(father, element);
   }
+};
+
+export const updateProps = (element: Element, props: Data) => {
+  element.$.props = {
+    ...element.$.props,
+    ...props,
+  };
 };

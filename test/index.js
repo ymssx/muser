@@ -7,7 +7,7 @@ const muse = new Muse([
   new Wrapper({
     canvas,
     width: 300,
-    height: 200,
+    height: 300,
   }),
 ]);
 

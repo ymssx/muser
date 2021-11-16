@@ -1,7 +1,7 @@
 import { Data, CanvasElement } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
-import { createCanvas } from './utils/canvas';
+import { bindCanvas, createCanvas } from './utils/canvas';
 import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
 import { isWorthToUpdate } from './render/index';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
@@ -50,7 +50,7 @@ export default abstract class Element {
     return this.$.canvas as CanvasElement;
   }
 
-  constructor(config: ElementConfigExtend, canvas?: CanvasElement) {
+  constructor(config: ElementConfigExtend) {
     this.config = {
       ...Default.Element.config,
       ...config,
@@ -64,7 +64,9 @@ export default abstract class Element {
     this.props = getPropsProxy(this);
 
     if (this.config.cache) {
-      this.canvas = canvas ?? createCanvas(this.config.width, this.config.height);
+      this.canvas = this.config.canvas
+        ? bindCanvas(this.config.canvas, this.config.width, this.config.height)
+        : createCanvas(this.config.width, this.config.height);
     }
   }
 }
