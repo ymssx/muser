@@ -1,25 +1,41 @@
 import Element from '../element';
 import CanvasProxy from '../canvasExtends';
-import { bindTree } from './element';
+import { bindTree, bindElements } from './element';
 import { CanvasElement } from 'src/const/common';
 
 /**
  * a proxy of origin component
  */
-export const getChildProxy = (elementMap: { [name: string]: Element }, father: Element) => {
+export const getChildProxy = (element: Element) => {
   return new Proxy(
     {},
     {
       get(_, name: string) {
-        const element = elementMap[name];
+        const { childMap, father } = element.$;
+
+        let target: Element;
+        if (childMap.hasOwnProperty(name)) {
+          target = childMap[name];
+        } else if (element.hasOwnProperty(name)) {
+          target = (element as any)[name];
+          childMap[name] = target;
+          bindElements(element, target);
+        } else {
+          throw new Error(`No element named ${name}`);
+        }
+
+        if (!father) {
+          const ext = new CanvasProxy(target);
+          return ext.updateProps.bind(ext);
+        }
 
         if (!father.$.elPainterMap[name]) {
-          const ext = new CanvasProxy(element);
+          const ext = new CanvasProxy(target);
           father.$.elPainterMap[name] = ext.updateProps.bind(ext);
         }
 
         if (father.$.isCollectingChilds) {
-          father.$.tempChildStack.push(element);
+          father.$.tempChildStack.push(target);
         }
 
         return father.$.elPainterMap[name];
@@ -96,11 +112,11 @@ export const getStateProxy = (element: Element) => {
 };
 
 export const setChildProxy = (element: Element) => {
+  element.$.childs = getChildProxy(element);
   Object.defineProperty(element, 'childMap', {
     set(elementMap: { [name: string]: Element }) {
       bindTree(elementMap, element);
       element.$.childMap = elementMap;
-      element.$.childs = getChildProxy(elementMap, element);
     },
   });
   Object.defineProperty(element, 'childs', {

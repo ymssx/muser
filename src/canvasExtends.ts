@@ -1,7 +1,7 @@
 import { Data } from './const/common';
 import { ElementConfigExtend } from './const/element';
 import Element from './element';
-import { paintToFather } from './render/render';
+import { paintToFather, updateElementTree } from './render/render';
 import { updateProps } from './utils/element';
 
 interface PasteConfig {
@@ -20,12 +20,7 @@ export default class CanvasProxy {
 
   updateProps(props: Data = {}, config?: ElementConfigExtend) {
     updateProps(this.element, props);
-    if (this.element.$.stale) {
-      const { context } = this.element;
-      context.save();
-      this.element.paint(this.element);
-      context.restore();
-    }
+    updateElementTree(this.element);
     return this;
   }
 

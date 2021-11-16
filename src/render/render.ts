@@ -12,12 +12,14 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
   }
 };
 
-export const updateElementTree = (root: Element) => {
+export const updateElementTree = (element: Element) => {
   // if component is not stale, skip rerender
-  if (!root.$.stale) {
-    return;
+  if (element.$.stale) {
+    const { context } = element;
+    context.save();
+    element.paint(element);
+    context.restore();
   }
-  root.paint(root);
 };
 
 export const paintToFather = (element: Element, style: { x?: number; y?: number } = {}) => {
