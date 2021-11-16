@@ -60,12 +60,54 @@ export const getPropsProxy = (element: Element) => {
 
         return res;
       },
-      set(props, key: string, value) {
-        element.$.props[key] = value;
+      set() {
+        // props is not allowed to modify
+        return false;
+      },
+    }
+  );
+};
+
+export const getStateProxy = (element: Element) => {
+  const stateProxy = new Proxy(
+    {},
+    {
+      get(originState, key: string) {
+        let res;
+
+        if (element.$.state.hasOwnProperty(key)) {
+          res = element.$.state[key];
+        }
+
+        if (element.$.isAnsysingDependence) {
+          element.$.dependence[key] = res;
+        }
+
+        return res;
+      },
+      set(originState, key: string, value) {
+        if (element.$.state[key] !== value) {
+          element.$.stale = true;
+          element.$.updater.registUpdate();
+        }
+        element.$.state[key] = value;
         return true;
       },
     }
   );
+
+  Object.defineProperty(element, 'state', {
+    get() {
+      return stateProxy;
+    },
+    set(value) {
+      this.$.state = value;
+      element.$.stale = true;
+      element.$.updater.registUpdate();
+    },
+  });
+
+  return stateProxy;
 };
 
 export const bindTree = (elementMap: { [name: string]: Element }, father: Element) => {

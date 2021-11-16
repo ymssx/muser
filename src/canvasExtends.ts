@@ -21,7 +21,10 @@ export default class CanvasProxy {
   updateProps(props: Data = {}, config?: ElementConfigExtend) {
     updateProps(this.element, props);
     if (this.element.$.stale) {
-      this.element.paint();
+      const { context } = this.element;
+      context.save();
+      this.element.paint(this.element);
+      context.restore();
     }
     return this;
   }

@@ -10,12 +10,13 @@ export interface ElementPrivateProps {
   root: Element | null;
   updater: Updater;
   props: Data;
+  state: Data;
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
   tempChildStack: Element[];
   childList: Element[];
   childMap: { [name: string]: Element };
-  childs: { [name: string]: (props: Data, config: ElementConfigExtend) => CanvasProxy };
+  childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
   dependence: Data;
@@ -28,6 +29,7 @@ export const initElementPrivateProps = (element: Element) => ({
   root: null,
   updater: new Updater(element),
   props: {},
+  state: {},
   elPainterMap: {},
   isCollectingChilds: false,
   tempChildStack: [],

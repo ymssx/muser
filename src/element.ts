@@ -2,21 +2,20 @@ import { Data, CanvasElement } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { bindCanvas, createCanvas } from './utils/canvas';
-import { getChildProxy, getPropsProxy, bindTree } from './utils/element';
-import { isWorthToUpdate } from './render/index';
+import { getChildProxy, getPropsProxy, getStateProxy, bindTree } from './utils/element';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
-import { setData } from './render/updateCheck';
+import { setState } from './render/updateCheck';
 
 export default abstract class Element {
   $: ElementPrivateProps;
   public props: Data;
-  public data: Data = {};
+  public state: Data;
   public config: ElementConfig = Default.Element.config;
 
-  abstract paint(): void;
+  abstract paint(element: Element): void;
 
-  public setData(newProps: Data) {
-    return setData(newProps, this);
+  public setState(newProps: Data) {
+    return setState(newProps, this);
   }
 
   get context() {
@@ -62,6 +61,7 @@ export default abstract class Element {
     this.$ = initElementPrivateProps(this);
 
     this.props = getPropsProxy(this);
+    this.state = getStateProxy(this);
 
     if (this.config.cache) {
       this.canvas = this.config.canvas

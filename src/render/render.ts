@@ -17,7 +17,7 @@ export const updateElementTree = (root: Element) => {
   if (!root.$.stale) {
     return;
   }
-  root.paint();
+  root.paint(root);
 };
 
 export const paintToFather = (element: Element, style: { x?: number; y?: number } = {}) => {
