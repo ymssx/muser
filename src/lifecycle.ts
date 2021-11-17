@@ -1,9 +1,15 @@
 import Element from './element';
-import { createCanvas } from './utils/canvas';
 
-export namespace LifeCycle {
-  const defaultBeforeCreated = (element: Element) => {
-    const { width, height } = element.config;
-    element.canvas = createCanvas(width, height);
-  };
+export default class LifeCycle {
+  element: Element;
+
+  constructor(element: Element) {
+    this.element = element;
+  }
+
+  start() {
+    if (this.element.created instanceof Function) {
+      this.element.created();
+    }
+  }
 }

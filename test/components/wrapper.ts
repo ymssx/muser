@@ -10,10 +10,6 @@ export default class Test extends Element {
     this.state = {
       boxColor: 'blue',
     };
-
-    setTimeout(() => {
-      this.state.boxColor = 'red';
-    }, 2000);
   }
 
   created() {
@@ -37,6 +33,10 @@ export default class Test extends Element {
     })
       .paste({
         x: 10,
+        y: 10,
+      })
+      .paste({
+        x: 30,
         y: 10,
       });
   }

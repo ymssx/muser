@@ -3,6 +3,8 @@ import { ElementConfigExtend } from '../const/element';
 import Element from '../element';
 import Updater from '../render/updater';
 import CanvasProxy from '../canvasExtends';
+import LifeCycle from '../lifecycle';
+import lifecycle from '../lifecycle';
 
 export interface ElementPrivateProps {
   canvas: CanvasElement | null;
@@ -21,6 +23,7 @@ export interface ElementPrivateProps {
   hasInit: boolean; // if the component rendered for the first time
   dependence: Data;
   isAnsysingDependence: boolean;
+  lifecycle: LifeCycle;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -40,4 +43,5 @@ export const initElementPrivateProps = (element: Element) => ({
   hasInit: false,
   isAnsysingDependence: false,
   dependence: {},
+  lifecycle: new LifeCycle(element),
 });
