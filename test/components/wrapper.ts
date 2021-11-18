@@ -12,6 +12,15 @@ export default class Test extends Element {
     };
   }
 
+  created() {
+    setTimeout(() => {
+      console.log('update');
+      this.setState({
+        boxColor: 'green',
+      });
+    }, 3000);
+  }
+
   paint({ context: ctx, props, state, childs }: Element) {
     console.log('wrapper', props, state.boxColor);
     const { box1 } = childs;

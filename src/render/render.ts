@@ -54,6 +54,15 @@ export const paintToFather = (element: Element, style: PaintConfig = {}) => {
     [...xs, x],
     [...ys, y],
   ];
+  // 仅在一个主任务中收集，下次任务开始前清空
+  if (!element.$.snapFlag) {
+    element.$.snapFlag = true;
+    element.$.positionSnapshots = [];
+    element.$.propsSnapshots = [];
+    setTimeout(() => {
+      element.$.snapFlag = false;
+    }, 0);
+  }
   element.$.positionSnapshots.push([[xs, ys], style]);
   element.$.propsSnapshots.push(element.$.props);
 
@@ -85,9 +94,16 @@ export const getPaintTarget = (element: Element): Element => {
 };
 
 export const directUpdate = (element: Element) => {
+  // root element
+  if (!element.$.father) {
+    updateElementTree(element);
+    return;
+  }
+
   if (!canDirectUpdate(element)) {
     if (element.$.father) {
       directUpdate(element.$.father);
+      return;
     }
   }
 

@@ -27,6 +27,7 @@ export interface ElementPrivateProps {
   stateReactive: boolean;
   positionSnapshots: [[number[], number[]], PaintConfig][];
   propsSnapshots: Data[];
+  snapFlag: boolean;
   currentPosition: [number[], number[]];
   floor: number;
 }
@@ -52,6 +53,7 @@ export const initElementPrivateProps = (element: Element) => ({
   stateReactive: false,
   positionSnapshots: [],
   propsSnapshots: [],
+  snapFlag: false,
   currentPosition: [[], []] as [number[], number[]],
   floor: 0,
 });
