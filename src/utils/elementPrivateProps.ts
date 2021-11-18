@@ -4,7 +4,6 @@ import Element from '../element';
 import Updater from '../render/updater';
 import CanvasProxy from '../canvasExtends';
 import LifeCycle from '../lifecycle';
-import lifecycle from '../lifecycle';
 
 export interface ElementPrivateProps {
   canvas: CanvasElement | null;
@@ -24,6 +23,10 @@ export interface ElementPrivateProps {
   dependence: Data;
   isAnsysingDependence: boolean;
   lifecycle: LifeCycle;
+  status: {
+    stateReactive: boolean;
+    lastPaintRelativePosition: [number, number];
+  };
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -44,4 +47,8 @@ export const initElementPrivateProps = (element: Element) => ({
   isAnsysingDependence: false,
   dependence: {},
   lifecycle: new LifeCycle(element),
+  status: {
+    stateReactive: false,
+    lastPaintRelativePosition: [0, 0] as [number, number],
+  },
 });

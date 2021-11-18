@@ -2,9 +2,8 @@ import { Data, CanvasElement } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { bindCanvas, createCanvas } from './utils/canvas';
-import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy } from './utils/proxy';
+import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
-import { setState } from './render/updateCheck';
 
 export default abstract class Element {
   /**
@@ -14,7 +13,7 @@ export default abstract class Element {
   $: ElementPrivateProps = initElementPrivateProps(this);
 
   public props: Data;
-  public state: Data;
+  public state: Data = {};
   public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
   public childs: { [name: string]: Function } = {};
@@ -49,10 +48,11 @@ export default abstract class Element {
     setCanvasProxy(this);
 
     this.props = getPropsProxy(this);
-    this.state = getStateProxy(this);
     this.canvas = this.config.canvas
       ? bindCanvas(this.config.canvas, this.config.width, this.config.height)
       : createCanvas(this.config.width, this.config.height);
+
+    reactiveState(this); // listen for state changes
 
     this.$.lifecycle.start();
   }

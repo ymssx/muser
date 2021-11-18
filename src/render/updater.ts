@@ -1,11 +1,12 @@
+import { getLastAbsolutePosition } from '../utils/element';
 import Element from '../element';
-import { updateElementTree } from './render';
+import { canDirectUpdate, directUpdate } from './render';
 
 export default class Updater {
   private element: Element;
   private updatePool: Set<Element> = new Set();
   public coverElements: Set<Element> = new Set();
-  private ticket: number | null = null;
+  public ticket: number | null = null;
 
   constructor(element: Element) {
     this.element = element;
@@ -21,14 +22,13 @@ export default class Updater {
   }
 
   update() {
-    this.updatePool.forEach((element) => {});
-    this.updatePool.clear();
+    const [x = 0, y = 0] = getLastAbsolutePosition(this.element);
+    directUpdate(this.element, { x, y });
+    this.ticket = null;
   }
-
-  directUpdate() {}
 
   registUpdate() {
     if (this.ticket) cancelAnimationFrame(this.ticket);
-    this.ticket = requestAnimationFrame(this.update);
+    this.ticket = requestAnimationFrame(() => this.update());
   }
 }

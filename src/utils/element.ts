@@ -24,9 +24,11 @@ export const bindTree = (elementMap: { [name: string]: Element }, father: Elemen
   }
 };
 
-export const updateProps = (element: Element, props: Data) => {
-  element.$.props = {
-    ...element.$.props,
-    ...props,
-  };
+export const getLastAbsolutePosition = (element: Element): [number, number] => {
+  const [x, y] = element.$.status.lastPaintRelativePosition;
+  if (element.$.father) {
+    const [fx, fy] = getLastAbsolutePosition(element.$.father);
+    return [x + fx, y + fy];
+  }
+  return [x, y];
 };

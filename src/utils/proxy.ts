@@ -2,6 +2,7 @@ import Element from '../element';
 import CanvasProxy from '../canvasExtends';
 import { bindTree, bindElements } from './element';
 import { CanvasElement } from 'src/const/common';
+import { Data } from '../const/common';
 
 /**
  * a proxy of origin component
@@ -70,7 +71,7 @@ export const getPropsProxy = (element: Element) => {
 };
 
 export const getStateProxy = (element: Element) => {
-  const stateProxy = new Proxy(
+  return new Proxy(
     {},
     {
       get(originState, key: string) {
@@ -87,7 +88,7 @@ export const getStateProxy = (element: Element) => {
         return res;
       },
       set(originState, key: string, value) {
-        if (element.$.state[key] !== value) {
+        if (element.$.state[key] !== value && element.$.status.stateReactive) {
           element.$.stale = true;
           element.$.updater.registUpdate();
         }
@@ -96,19 +97,34 @@ export const getStateProxy = (element: Element) => {
       },
     }
   );
+};
 
+export const reactiveState = (element: Element) => {
+  // 第一次同步任务中，state的更新是非响应式的
+  setTimeout(() => {
+    element.$.status.stateReactive = true;
+  }, 0);
+
+  const proxy = getStateProxy(element);
   Object.defineProperty(element, 'state', {
     get() {
-      return stateProxy;
+      return proxy;
     },
-    set(value) {
-      this.$.state = value;
-      element.$.stale = true;
-      element.$.updater.registUpdate();
+    set(newState) {
+      element.$.state = newState;
+      if (element.$.status.stateReactive) {
+        element.$.stale = true;
+        element.$.updater.registUpdate();
+      }
     },
   });
+};
 
-  return stateProxy;
+export const setState = (newState: Data = {}, element: Element) => {
+  element.state = {
+    ...element.state,
+    ...newState,
+  };
 };
 
 export const setChildProxy = (element: Element) => {

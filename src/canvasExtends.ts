@@ -1,13 +1,10 @@
 import { Data } from './const/common';
 import { ElementConfigExtend } from './const/element';
+import { PaintConfig } from './const/render';
 import Element from './element';
 import { paintToFather, updateElementTree } from './render/render';
-import { updateProps } from './utils/element';
+import { updateProps } from './render/updateCheck';
 
-interface PasteConfig {
-  x: number;
-  y: number;
-}
 export default class CanvasProxy {
   element: Element;
   constructor(element: Element) {
@@ -24,7 +21,7 @@ export default class CanvasProxy {
     return this;
   }
 
-  paste(style: PasteConfig) {
+  paste(style: PaintConfig) {
     paintToFather(this.element, style);
     return this;
   }

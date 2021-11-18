@@ -12,14 +12,8 @@ export default class Test extends Element {
     };
   }
 
-  created() {
-    this.setState({
-      boxColor: 'dark',
-    });
-  }
-
   paint({ context: ctx, props, state, childs }: Element) {
-    console.log('wrapper', props);
+    console.log('wrapper', props, state.boxColor);
     const { box1 } = childs;
     const { boxColor } = state;
 
@@ -36,8 +30,8 @@ export default class Test extends Element {
         y: 10,
       })
       .paste({
-        x: 30,
-        y: 10,
+        x: 10,
+        y: 50,
       });
   }
 }

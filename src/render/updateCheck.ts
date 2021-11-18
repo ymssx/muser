@@ -2,6 +2,16 @@ import { objectDiff } from '../utils/common';
 import { Data } from '../const/common';
 import Element from '../element';
 
+export const updateProps = (element: Element, props: Data) => {
+  element.$.props = {
+    ...element.$.props,
+    ...props,
+  };
+  if (hasChangeProps(element, props)) {
+    element.$.stale = true;
+  }
+};
+
 export const isChildsStale = (element: Element) => {
   for (const name in element.$.childList) {
     const el = element.$.childList[name];
@@ -12,7 +22,7 @@ export const isChildsStale = (element: Element) => {
   return false;
 };
 
-export const hasChangeProps = (props: Data, element: Element) => {
+export const hasChangeProps = (element: Element, props: Data) => {
   if (!element.$.hasInit) return true;
 
   for (const key in props) {
@@ -27,12 +37,5 @@ export const hasChangeProps = (props: Data, element: Element) => {
 };
 
 export const isWorthToUpdate = (props: Data, element: Element) => {
-  return element.$.stale || isChildsStale(element) || hasChangeProps(props, element);
-};
-
-export const setState = (newState: Data = {}, element: Element) => {
-  element.state = {
-    ...element.state,
-    ...newState,
-  };
+  return element.$.stale || isChildsStale(element) || hasChangeProps(element, props);
 };
