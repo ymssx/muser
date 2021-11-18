@@ -1,4 +1,3 @@
-import { getLastAbsolutePosition } from '../utils/element';
 import Element from '../element';
 import { canDirectUpdate, directUpdate } from './render';
 
@@ -22,8 +21,7 @@ export default class Updater {
   }
 
   update() {
-    const [x = 0, y = 0] = getLastAbsolutePosition(this.element);
-    directUpdate(this.element, { x, y });
+    directUpdate(this.element);
     this.ticket = null;
   }
 

@@ -21,8 +21,6 @@ export default class Test extends Element {
     ctx.fillRect(0, 0, 300, 300);
 
     box1({
-      a: 1,
-      b: 2,
       color: boxColor,
     })
       .paste({
@@ -32,6 +30,22 @@ export default class Test extends Element {
       .paste({
         x: 10,
         y: 50,
+      });
+
+    box1({
+      color: 'dark',
+    })
+      .paste({
+        x: 10,
+        y: 90,
+      });
+
+    box1({
+      color: 'orange',
+    })
+      .paste({
+        x: 10,
+        y: 130,
       });
   }
 }

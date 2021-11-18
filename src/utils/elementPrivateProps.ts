@@ -1,5 +1,6 @@
 import { CanvasElement, Data } from '../const/common';
 import { ElementConfigExtend } from '../const/element';
+import { PaintConfig } from '../const/render';
 import Element from '../element';
 import Updater from '../render/updater';
 import CanvasProxy from '../canvasExtends';
@@ -23,10 +24,11 @@ export interface ElementPrivateProps {
   dependence: Data;
   isAnsysingDependence: boolean;
   lifecycle: LifeCycle;
-  status: {
-    stateReactive: boolean;
-    lastPaintRelativePosition: [number, number];
-  };
+  stateReactive: boolean;
+  positionSnapshots: [[number[], number[]], PaintConfig][];
+  propsSnapshots: Data[];
+  currentPosition: [number[], number[]];
+  floor: number;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -47,8 +49,9 @@ export const initElementPrivateProps = (element: Element) => ({
   isAnsysingDependence: false,
   dependence: {},
   lifecycle: new LifeCycle(element),
-  status: {
-    stateReactive: false,
-    lastPaintRelativePosition: [0, 0] as [number, number],
-  },
+  stateReactive: false,
+  positionSnapshots: [],
+  propsSnapshots: [],
+  currentPosition: [[], []] as [number[], number[]],
+  floor: 0,
 });

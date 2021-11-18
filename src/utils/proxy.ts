@@ -88,7 +88,7 @@ export const getStateProxy = (element: Element) => {
         return res;
       },
       set(originState, key: string, value) {
-        if (element.$.state[key] !== value && element.$.status.stateReactive) {
+        if (element.$.state[key] !== value && element.$.stateReactive) {
           element.$.stale = true;
           element.$.updater.registUpdate();
         }
@@ -102,7 +102,7 @@ export const getStateProxy = (element: Element) => {
 export const reactiveState = (element: Element) => {
   // 第一次同步任务中，state的更新是非响应式的
   setTimeout(() => {
-    element.$.status.stateReactive = true;
+    element.$.stateReactive = true;
   }, 0);
 
   const proxy = getStateProxy(element);
@@ -112,7 +112,7 @@ export const reactiveState = (element: Element) => {
     },
     set(newState) {
       element.$.state = newState;
-      if (element.$.status.stateReactive) {
+      if (element.$.stateReactive) {
         element.$.stale = true;
         element.$.updater.registUpdate();
       }

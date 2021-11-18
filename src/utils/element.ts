@@ -1,10 +1,10 @@
 import Element from '../element';
-import { Data } from 'src/const/common';
 
 export const bindElements = (father: Element, children: Element) => {
   children.$.father = father;
   // if father dont have a root element, father is the root
   children.$.root = father.$.root || father;
+  children.$.floor = father.$.floor + 1;
 };
 
 export const bindElementsLayer = (elementMap: { [key: string]: Element }, element: Element) => {
@@ -22,13 +22,4 @@ export const bindTree = (elementMap: { [name: string]: Element }, father: Elemen
     const element = elementMap[name];
     bindElements(father, element);
   }
-};
-
-export const getLastAbsolutePosition = (element: Element): [number, number] => {
-  const [x, y] = element.$.status.lastPaintRelativePosition;
-  if (element.$.father) {
-    const [fx, fy] = getLastAbsolutePosition(element.$.father);
-    return [x + fx, y + fy];
-  }
-  return [x, y];
 };

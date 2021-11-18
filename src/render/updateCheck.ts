@@ -3,12 +3,12 @@ import { Data } from '../const/common';
 import Element from '../element';
 
 export const updateProps = (element: Element, props: Data) => {
-  element.$.props = {
-    ...element.$.props,
-    ...props,
-  };
   if (hasChangeProps(element, props)) {
     element.$.stale = true;
+    element.$.props = {
+      ...element.$.props,
+      ...props,
+    };
   }
 };
 
