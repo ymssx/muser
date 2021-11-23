@@ -28,14 +28,16 @@ export default class Box extends Element {
 
   paint({ context: ctx, props, state, childs }: Element) {
     console.log('box', this.props, this.$.props);
-    const { color } = props;
+    const { color, count } = props as  { color: string, count: number };
     const { dot } = childs;
     const { boxColor } = state;
 
     ctx.fillStyle = color as string || 'green';
     ctx.fillRect(0, 0, 100, 30);
 
-    dot({ color: boxColor })
-      .paste({ x: 10, y: 10 });
+    const dotContext = dot({ color: boxColor });
+    for (let i = 0; i < count; i += 1) {
+      dotContext.paste({ x: 10 + i * 20, y: 10 });
+    }
   }
 }

@@ -9,6 +9,7 @@ export default class Test extends Element {
     };
     this.state = {
       boxColor: 'blue',
+      count: 1,
     };
   }
 
@@ -17,6 +18,7 @@ export default class Test extends Element {
       console.log('update');
       this.setState({
         boxColor: 'green',
+        count: 4,
       });
     }, 3000);
   }
@@ -24,13 +26,14 @@ export default class Test extends Element {
   paint({ context: ctx, props, state, childs }: Element) {
     console.log('wrapper', props, state.boxColor);
     const { box1 } = childs;
-    const { boxColor } = state;
+    const { boxColor, count } = state;
 
     ctx.fillStyle = '#ddd';
     ctx.fillRect(0, 0, 300, 300);
 
     box1({
       color: boxColor,
+      count,
     })
       .paste({
         x: 10,
@@ -43,6 +46,7 @@ export default class Test extends Element {
 
     box1({
       color: 'dark',
+      count: 2,
     })
       .paste({
         x: 10,
@@ -51,6 +55,7 @@ export default class Test extends Element {
 
     box1({
       color: 'orange',
+      count: 3,
     })
       .paste({
         x: 10,
