@@ -30,6 +30,7 @@ export interface ElementPrivateProps {
   snapFlag: boolean;
   currentPosition: [number[], number[]];
   floor: number;
+  canvasName: string | null;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -56,4 +57,5 @@ export const initElementPrivateProps = (element: Element) => ({
   snapFlag: false,
   currentPosition: [[], []] as [number[], number[]],
   floor: 0,
+  canvasName: null,
 });

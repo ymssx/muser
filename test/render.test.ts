@@ -11,11 +11,11 @@ test('is-browser-env', () => {
   expect(window).not.toBeUndefined();
 });
 
-const canvas = createCanvas(300, 200);
+// const canvas = createCanvas(300, 200);
 
-test('can-create-canvas', () => {
-  expect(canvas).not.toBeUndefined();
-});
+// test('can-create-canvas', () => {
+//   expect(canvas).not.toBeUndefined();
+// });
 
 // const muse = new Muse([
 //   new Wrapper({

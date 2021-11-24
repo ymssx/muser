@@ -1,14 +1,6 @@
-import { Muse } from '../src/index';
-import Wrapper from './components/wrapper';
+import { WorkerBridge } from '../src/worker/bridge';
 
 const canvas = document.querySelector('#canvas');
-
-const muse = new Muse([
-  new Wrapper({
-    canvas,
-    width: 300,
-    height: 300,
-  }),
-]);
-
-muse.paint();
+const bridge = new WorkerBridge('../dist/worker.js', {
+  wrapper: canvas,
+});
