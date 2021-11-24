@@ -6,12 +6,12 @@ class Dot extends Element {
     const { color } = props;
 
     ctx.fillStyle = color as string || 'white';
-    ctx.fillRect(0, 0, 10, 10);
+    ctx.fillRect(0, 0, 8, 8);
   }
 }
 
 export default class Box extends Element {
-  dot = new Dot({ width: 10, height: 10 });
+  dot = new Dot({ width: 8, height: 8 });
 
   state = {
     boxColor: 'red',
@@ -28,16 +28,21 @@ export default class Box extends Element {
 
   paint({ context: ctx, props, state, childs }: Element) {
     console.log('box', this.props, this.$.props);
-    const { color, count } = props as  { color: string, count: number };
+    const { color } = props as  { color: string, count: number };
     const { dot } = childs;
     const { boxColor } = state;
 
     ctx.fillStyle = color as string || 'green';
-    ctx.fillRect(0, 0, 100, 30);
+    ctx.fillRect(0, 0, 90, 90);
 
     const dotContext = dot({ color: boxColor });
-    for (let i = 0; i < count; i += 1) {
-      dotContext.paste({ x: 10 + i * 20, y: 10 });
+    for (let x = 0; x < 9; x += 1) {
+      for (let y = 0; y < 9; y += 1) {
+        dotContext.paste({
+          x: 1 + 10 * x,
+          y: 1 + 10 * y,
+        });
+      }
     }
   }
 }
