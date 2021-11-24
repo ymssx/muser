@@ -26,7 +26,7 @@ export abstract class WorkerBridge {
     [event: string]: Function;
   };
 
-  emit(event: string, data: any, list?: any[]): void {
+  emit(event: string, data?: any, list?: any[]): void {
     this.worker.postMessage(
       {
         event,
@@ -34,5 +34,9 @@ export abstract class WorkerBridge {
       },
       list
     );
+  }
+
+  paint() {
+    this.emit('paint');
   }
 }

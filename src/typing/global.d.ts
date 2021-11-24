@@ -5,6 +5,4 @@ interface Window {
 
 declare const WorkerGlobalScope;
 
-declare const OffscreenCanvas: OffscreenCanvas;
-
 declare var onmessage;

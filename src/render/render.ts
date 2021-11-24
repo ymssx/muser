@@ -126,3 +126,7 @@ export const directUpdate = (element: Element) => {
 
   element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl));
 };
+
+export const renderToNewCanvas = (element: Element, newCanvas: OffscreenCanvas) => {
+  element.canvas = newCanvas;
+};

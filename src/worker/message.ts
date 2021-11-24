@@ -1,4 +1,5 @@
 import Muse from '../muse';
+import { renderToNewCanvas } from '../render/render';
 
 export const addEventListener = (root: Muse) => {
   self.addEventListener('message', ({ data: res }) => {
@@ -9,9 +10,10 @@ export const addEventListener = (root: Muse) => {
       console.log('init', data);
       root.childs.forEach((element) => {
         if (element.$.canvasName && data.hasOwnProperty(element.$.canvasName)) {
-          element.canvas = data[element.$.canvasName];
+          renderToNewCanvas(element, data[element.$.canvasName]);
         }
       });
+    } else if (event === 'paint') {
       root.paint();
     }
   });
