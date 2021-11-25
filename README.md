@@ -16,3 +16,7 @@ A Canvas Componentization Framework to Help You Build Complex UI.
 - worker: paint在worker中进行 done
 - 切片渲染
 - hooks
+
+- 多组件渲染有问题，自组件无内容
+- 后处理算法待验证
+- 插槽在初次渲染不生效，和多点更新问题需要一起看一下
