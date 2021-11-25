@@ -3,8 +3,10 @@ import Wrapper from './components/wrapper';
 
 const muse = new Muse([
   new Wrapper({
-    canvas: 'wrapper',
-    width: 1000,
-    height: 1000,
+    canvas: document.querySelector('#canvas'),
+    width: 2000,
+    height: 2000,
   }),
 ]);
+
+muse.paint();

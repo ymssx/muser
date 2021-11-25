@@ -36,7 +36,7 @@ export abstract class WorkerBridge {
     );
   }
 
-  paint() {
-    this.emit('paint');
+  render() {
+    this.emit('render');
   }
 }

@@ -13,8 +13,8 @@ export const addEventListener = (root: Muse) => {
           renderToNewCanvas(element, data[element.$.canvasName]);
         }
       });
-    } else if (event === 'paint') {
-      root.paint();
+    } else if (event === 'render') {
+      root.render();
     }
   });
 };

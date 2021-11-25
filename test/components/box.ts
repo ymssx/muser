@@ -1,8 +1,7 @@
 import { Element } from '../../src/index';
 
 class Dot extends Element {
-  paint({ context: ctx, props }: Element) {
-    console.log('dot', this.props, this.$.props);
+  render({ context: ctx, props }: Element) {
     const { color } = props;
 
     ctx.fillStyle = color as string || 'white';
@@ -26,8 +25,7 @@ export default class Box extends Element {
     }, 2000);
   }
 
-  paint({ context: ctx, props, state, childs }: Element) {
-    console.log('box', this.props, this.$.props);
+  render({ context: ctx, props, state, childs }: Element) {
     const { color } = props as  { color: string, count: number };
     const { dot } = childs;
     const { boxColor } = state;
@@ -44,5 +42,7 @@ export default class Box extends Element {
         });
       }
     }
+
+    this.slot();
   }
 }

@@ -1,9 +1,11 @@
 import { Data, CanvasElement } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
+import { renderSlot } from './render/render';
 import { initCanvas } from './utils/canvas';
 import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
+import CanvasProxy from './canvasExtends';
 
 export default abstract class Element {
   /**
@@ -16,11 +18,14 @@ export default abstract class Element {
   public state: Data = {};
   public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
-  public childs: { [name: string]: Function } = {};
+  public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy } = {};
   public childMap: { [name: string]: Element } = {};
 
   // canvas piant method
-  abstract paint(element: Element): void;
+  abstract render(element: Element): void;
+  public slot(name = 'default') {
+    renderSlot(this, name);
+  }
 
   // lifecycle methods
   created?(): void;

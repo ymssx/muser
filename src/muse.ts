@@ -17,7 +17,7 @@ export default class Muse {
     }
   }
 
-  paint() {
+  render() {
     this.childs.forEach((element) => {
       updateElementTree(element);
     });

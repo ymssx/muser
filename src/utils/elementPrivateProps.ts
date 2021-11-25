@@ -31,6 +31,8 @@ export interface ElementPrivateProps {
   currentPosition: [number[], number[]];
   floor: number;
   canvasName: string | null;
+  processSet: Set<(element: Element) => void>;
+  slotsMap: Map<string, (element: Element) => void>;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -58,4 +60,6 @@ export const initElementPrivateProps = (element: Element) => ({
   currentPosition: [[], []] as [number[], number[]],
   floor: 0,
   canvasName: null,
+  processSet: new Set<(element: Element) => void>(),
+  slotsMap: new Map<string, (element: Element) => void>(),
 });

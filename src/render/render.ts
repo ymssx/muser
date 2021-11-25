@@ -21,7 +21,7 @@ export const updateElementTree = (element: Element) => {
     context.save();
 
     element.$.isAnsysingDependence = true;
-    element.paint(element);
+    element.render(element);
     element.$.isAnsysingDependence = false;
 
     context.restore();
@@ -30,16 +30,21 @@ export const updateElementTree = (element: Element) => {
   }
 };
 
-export const paintTo = (element: Element, target: Element, style: PaintConfig = { x: 0, y: 0 }) => {
+export const renderTo = (element: Element, target: Element, style: PaintConfig = { x: 0, y: 0 }) => {
   const elementContent = element.$.canvas;
   const targetContext = target.context;
   const { x = 0, y = 0 } = style;
-  if (elementContent) {
-    targetContext?.drawImage(elementContent, x, y);
-  }
+
+  targetContext.save();
+  targetContext.translate(x, y);
+  if (elementContent) targetContext?.drawImage(elementContent, 0, 0); // 主绘制逻辑
+  element.$.processSet.forEach((process) => process(target)); // 后处理
+  targetContext.restore();
+
+  element.$.processSet.clear();
 };
 
-export const paintToFather = (element: Element, style: PaintConfig = {}) => {
+export const renderToFather = (element: Element, style: PaintConfig = {}) => {
   if (!element.$.father) {
     throw new Error(`Element don't have a father element`);
   }
@@ -66,7 +71,7 @@ export const paintToFather = (element: Element, style: PaintConfig = {}) => {
   element.$.positionSnapshots.push([[xs, ys], style]);
   element.$.propsSnapshots.push(element.$.props);
 
-  paintTo(element, element.$.father, style);
+  renderTo(element, element.$.father, style);
 };
 
 export const getTargetPosition = (target: Element, list: [number[], number[]]): [number, number] => {
@@ -121,7 +126,7 @@ export const directUpdate = (element: Element) => {
       x: tx + x,
       y: ty + y,
     };
-    paintTo(element, target, currentStyle);
+    renderTo(element, target, currentStyle);
   }
 
   element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl));
@@ -129,4 +134,13 @@ export const directUpdate = (element: Element) => {
 
 export const renderToNewCanvas = (element: Element, newCanvas: OffscreenCanvas) => {
   element.canvas = newCanvas;
+};
+
+export const renderSlot = (element: Element, name: string = 'default') => {
+  const process = element.$.slotsMap.get(name);
+  if (process instanceof Function) {
+    element.context.save();
+    process(element);
+    element.context.restore();
+  }
 };
