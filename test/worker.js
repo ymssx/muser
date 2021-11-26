@@ -9,4 +9,4 @@ const muse = new Muse([
   }),
 ]);
 
-muse.paint();
+muse.render();

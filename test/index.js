@@ -5,4 +5,4 @@ const bridge = new WorkerBridge('../dist/worker.js', {
   wrapper: canvas,
 });
 
-bridge.paint();
+bridge.render();

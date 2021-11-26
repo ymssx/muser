@@ -20,3 +20,7 @@ A Canvas Componentization Framework to Help You Build Complex UI.
 - 多组件渲染有问题，自组件无内容
 - 后处理算法待验证
 - 插槽在初次渲染不生效，和多点更新问题需要一起看一下
+
+### 待讨论
+
+- 子组件的宽高不应该由父级决定
