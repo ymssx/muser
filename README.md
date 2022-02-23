@@ -1,5 +1,7 @@
 # Muse
 
+[中文](https://github.com/ymssx/muse/blob/master/README_CN.md)
+
 A Canvas Componentization Framework to Help You Build Complex UI.
 
 - Componentization

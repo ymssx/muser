@@ -1,5 +1,7 @@
 # Muse
 
+[English](https://github.com/ymssx/muse/blob/master/README.md)
+
 构建复杂UI的Canvas组件化框架.
 
 - 组件化
