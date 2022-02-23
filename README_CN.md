@@ -147,14 +147,16 @@ class Container extends Element {
 
 这个过程中，因为内部状态改变，组件`container`会被自动重绘，而子组件`block`由于参数`boxColor`没有发生更改，因此子组件不需要重绘。这样我们高效的完成了组件树的一次更新。
 
-### 连接到页面中
+### 挂载到页面中
+
+最外层的容器`Container`需要挂载到一个真实的`Canvas`元素上才能生效。依照下面的代码，你需要手动给它指定一个`HTMLCanvasElement`节点，同时设置它的绘制范围。
 
 ```ts
 import { Muse } from 'muse';
-import Contaner from 'src/components/container';
+import Container from 'src/components/container';
 
 const app = new Muse([
-  new Contaner({
+  new Container({
     canvas: document.querySelector('#main'),
     width: 300,
     height: 300,
@@ -163,3 +165,27 @@ const app = new Muse([
 
 app.render();
 ```
+
+可以看到，我们的`Muse`构造函数接收一个组件数组，这意味着你可以指定多个根级组件来实现多图层渲染。
+
+最后，对我们的`Muse`实例`app`使用`render`方法，整个应用就开始运转起来了！
+
+### 使用WebWorker离屏渲染
+
+相比于DOM渲染，`Canvas`应用的一大优势是，我们可以使用`WebWorker`来进行离屏渲染，渲染程序不会堵塞主程序。
+
+在Muse中，我们可以轻松支持这一模式，仅仅需要新增一个文件：
+
+```js
+import { WorkerBridge } from 'muse';
+
+const canvas = document.querySelector('#main');
+const bridge = new WorkerBridge(
+  'src/canvas-app.js',
+  { wrapper: canvas },
+);
+
+bridge.render();
+```
+
+我们可能需要使用`Webpack`等打包工具来将应用合并为一个单文件，然后在WorkerBridge中引用，然后为它绑定一个真实的`Canvas`节点，我们会自动在worker线程中进行`Offscreen Canvas`的渲染，并在合适的时机同步到真实的`Canvas`中。
