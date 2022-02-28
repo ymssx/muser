@@ -21,7 +21,7 @@ export default abstract class Element {
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy } = {};
   public childMap: { [name: string]: Element } = {};
 
-  // canvas piant method
+  // canvas render method
   abstract render(element: Element): void;
   public slot(name = 'default') {
     renderSlot(this, name);
@@ -49,9 +49,17 @@ export default abstract class Element {
       ...config,
     };
 
+    /**
+     * setChildProxy:
+     *   - bind a Proxy to visit component's childs
+     * setCanvasProxy:
+     *   - bind a Proxy to return whether itself Canvas or father's Canvas
+     *   - which depends on the value of 'config.cache'
+     */
     setChildProxy(this);
     setCanvasProxy(this);
 
+    // set a Proxy to record the reading action of 'Props'
     this.props = getPropsProxy(this);
     this.canvas = initCanvas(this);
 

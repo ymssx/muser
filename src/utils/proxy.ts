@@ -100,7 +100,8 @@ export const getStateProxy = (element: Element) => {
 };
 
 export const reactiveState = (element: Element) => {
-  // 第一次同步任务中，state的更新是非响应式的
+  // the updating of 'state' is unreactive in the element init process
+  // TODO: 是不是应该放在生命周期里面做
   setTimeout(() => {
     element.$.stateReactive = true;
   }, 0);
