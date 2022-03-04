@@ -8,27 +8,49 @@ interface ElementEvent {
 }
 
 export const listenEvent = (element: Element) => {
-  const canvas = element.canvas;
+  const canvas = element.canvas as HTMLCanvasElement;
+  const rect = canvas.getBoundingClientRect();
+  const rw = canvas.width / rect.width;
+  const rh = canvas.height / rect.height;
+
   canvas?.addEventListener('mousemove', (event) => {
+    const x = event.clientX - rect.left * rw;
+    const y = event.clientY - rect.top * rh;
+
     broadcastEvent(element, {
       name: 'mousemove',
       event,
-      x: 0,
-      y: 0,
+      x,
+      y,
     });
   });
   canvas?.addEventListener('click', (event) => {
+    const x = event.clientX - rect.left * rw;
+    const y = event.clientY - rect.top * rh;
+
     broadcastEvent(element, {
       name: 'click',
       event,
-      x: 0,
-      y: 0,
+      x,
+      y,
     });
   });
 };
 
+export const addEventListener = (element: Element, eventName: string, callback: Function) => {
+  const map = element.$.eventMap;
+  if (!map.has(eventName)) {
+    map.set(eventName, new Set());
+  }
+  const set = map.get(eventName);
+  set?.add(callback);
+};
+
 export const trigerEvent = (element: Element, event: ElementEvent) => {
-  console.log(element, event);
+  const map = element.$.eventMap;
+  if (map.has(event?.name)) {
+    map.get(event.name)?.forEach(callback => callback(event));
+  }
 };
 
 export const broadcastEvent = (element: Element, event: ElementEvent) => {

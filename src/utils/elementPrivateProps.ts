@@ -34,6 +34,7 @@ export interface ElementPrivateProps {
   canvasName: string | null;
   processSet: Set<(element: Element) => void>;
   slotsMap: Map<string, (element: Element) => void>;
+  eventMap: Map<string, Set<Function>>;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -64,4 +65,5 @@ export const initElementPrivateProps = (element: Element) => ({
   canvasName: null,
   processSet: new Set<(element: Element) => void>(),
   slotsMap: new Map<string, (element: Element) => void>(),
+  eventMap: new Map(),
 });

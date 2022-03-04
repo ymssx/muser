@@ -129,11 +129,12 @@ export const reactiveState = (element: Element) => {
 };
 
 export const setState = (newState: Data = {}, element: Element) => {
-  element.state = {
-    ...element.state,
-    ...newState,
-  };
   if (hasChangeState(element, newState)) {
+    element.$.state = {
+      ...element.$.state,
+      ...newState,
+    };
+
     element.$.stale = true;
     element.$.updater.registUpdate();
   };

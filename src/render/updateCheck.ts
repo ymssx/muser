@@ -24,10 +24,11 @@ export const isChildsStale = (element: Element) => {
 
 export const hasChangeProps = (element: Element, props: Data) => {
   if (!element.$.hasInit) return true;
+  if (!element.config.cache) return true;
 
   const oldProps = element.$.props;
-  let flag = false;
 
+  let flag = false;
   for (const key in props) {
     if (oldProps[key] !== props[key]) {
       flag = true;
@@ -45,8 +46,8 @@ export const hasChangeState = (element: Element, state: Data) => {
   if (!element.$.hasInit) return true;
 
   const oldState = element.$.state;
-  let flag = false;
 
+  let flag = false;
   for (const key in state) {
     if (oldState[key] !== state[key]) {
       flag = true;
@@ -58,8 +59,4 @@ export const hasChangeState = (element: Element, state: Data) => {
     }
   }
   return flag;
-};
-
-export const isWorthToUpdate = (props: Data, element: Element) => {
-  return element.$.stale || isChildsStale(element) || hasChangeProps(element, props);
 };

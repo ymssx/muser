@@ -5,6 +5,7 @@ import { renderSlot } from './render/render';
 import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
 import CanvasProxy from './canvasExtends';
+import { addEventListener } from './event/index';
 
 export default abstract class Element {
   /**
@@ -34,6 +35,10 @@ export default abstract class Element {
 
   public setState(newProps: Data) {
     return setState(newProps, this);
+  }
+  
+  public addEventListener(eventName: string, callback: Function) {
+    return addEventListener(this, eventName, callback);
   }
 
   get context() {

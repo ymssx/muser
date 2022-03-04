@@ -15,24 +15,6 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
   }
 };
 
-export const render = (element: Element) => {
-  element.$.isAnsysingDependence = true;
-
-  let renderList: RenderFunction[];
-  if (!element.$.hasInit) {
-    const renderRes = element.render(element);
-    renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
-  } else {
-    renderList = Array.from(element.$.updateRenderFunctions);
-    element.$.updateRenderFunctions?.clear();
-  }
-  for (const renderFunction of renderList) {
-    element.$.currentRenderFunction = renderFunction;
-    renderFunction(element.context);
-  }
-  element.$.isAnsysingDependence = false;
-};
-
 export const updateElementTree = (element: Element, props?: Data) => {
   if (props) {
     element.$.props = props;
@@ -42,9 +24,24 @@ export const updateElementTree = (element: Element, props?: Data) => {
   if (element.$.stale) {
     const { context } = element;
 
-    context.save();
-    render(element);
-    context.restore();
+    element.$.isAnsysingDependence = true;
+
+    let renderList: RenderFunction[];
+    if (!element.$.hasInit) {
+      const renderRes = element.render(element);
+      renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
+    } else {
+      renderList = Array.from(element.$.updateRenderFunctions);
+      element.$.updateRenderFunctions?.clear();
+    }
+    for (const renderFunction of renderList) {
+      element.$.currentRenderFunction = renderFunction;
+      context.save();
+      renderFunction(element.context);
+      context.restore();
+    }
+
+    element.$.isAnsysingDependence = false;
 
     element.$.stale = false;
     element.$.hasInit = true;
