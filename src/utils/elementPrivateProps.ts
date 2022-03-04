@@ -20,12 +20,9 @@ export interface ElementPrivateProps {
   childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
-  dependence: {
-    [key: string]: {
-      value: unknown,
-      render: RenderFunction | null,
-    };
-  };
+  propsDependence: Map<string, { value: unknown, render: Set<RenderFunction> }>;
+  stateDependence: Map<string, { value: unknown, render: Set<RenderFunction> }>;
+  updateRenderFunctions: Set<RenderFunction>;
   isAnsysingDependence: boolean;
   currentRenderFunction: RenderFunction | null;
   lifecycle: LifeCycle;
@@ -55,7 +52,9 @@ export const initElementPrivateProps = (element: Element) => ({
   stale: true,
   hasInit: false,
   isAnsysingDependence: false,
-  dependence: {},
+  propsDependence: new Map(),
+  stateDependence: new Map(),
+  updateRenderFunctions: new Set(),
   currentRenderFunction: null,
   lifecycle: new LifeCycle(element),
   stateReactive: false,

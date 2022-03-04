@@ -3,6 +3,7 @@ import CanvasProxy from '../canvasExtends';
 import { bindTree, bindElements } from './element';
 import { CanvasElement, Data } from '../const/common';
 import { initCanvas } from '../utils/canvas';
+import { hasChangeState } from '../render/updateCheck';
 
 /**
  * a proxy of origin component
@@ -57,10 +58,20 @@ export const getPropsProxy = (element: Element) => {
         }
 
         if (element.$.isAnsysingDependence) {
-          element.$.dependence[key] = {
-            value: res,
-            render: element.$.currentRenderFunction,
-          };
+          if (!element.$.propsDependence.has(key)) {
+            element.$.propsDependence.set(key, {
+              value: res,
+              render: new Set(),
+            });
+          }
+          const dependence = element.$.propsDependence.get(key);
+          if (!dependence) {
+            throw new Error(`can't get props ${key} from 'element.$.propsDependence'`);
+          }
+          dependence.value = res;
+          if (element.$.currentRenderFunction) {
+            dependence.render.add(element.$.currentRenderFunction);
+          }
         }
 
         return res;
@@ -85,10 +96,20 @@ export const getStateProxy = (element: Element) => {
         }
 
         if (element.$.isAnsysingDependence) {
-          element.$.dependence[key] = {
-            value: res,
-            render: element.$.currentRenderFunction,
-          };
+          if (!element.$.stateDependence.has(key)) {
+            element.$.stateDependence.set(key, {
+              value: res,
+              render: new Set(),
+            });
+          }
+          const dependence = element.$.stateDependence.get(key);
+          if (!dependence) {
+            throw new Error(`can't get state ${key} from 'element.$.stateDependence'`);
+          }
+          dependence.value = res;
+          if (element.$.currentRenderFunction) {
+            dependence.render.add(element.$.currentRenderFunction);
+          }
         }
 
         return res;
@@ -118,8 +139,10 @@ export const setState = (newState: Data = {}, element: Element) => {
     ...element.state,
     ...newState,
   };
-  element.$.stale = true;
-  element.$.updater.registUpdate();
+  if (hasChangeState(element, newState)) {
+    element.$.stale = true;
+    element.$.updater.registUpdate();
+  };
 };
 
 export const setChildProxy = (element: Element) => {

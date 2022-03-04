@@ -1,6 +1,6 @@
 {
   "name": "muser",
-  "version": "1.0.4-beta.1.5",
+  "version": "1.0.4-beta.1.7",
   "description": "Framework to help you build complex canvas applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

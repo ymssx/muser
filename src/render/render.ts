@@ -2,7 +2,7 @@ import Element from '../element';
 import Updater from './updater';
 import { PaintConfig } from '../const/render';
 import { updateProps } from './updateCheck';
-import { Data } from '../const/common';
+import { Data, RenderFunction } from '../const/common';
 
 export const canDirectUpdate = (element: Element) => true;
 
@@ -17,8 +17,15 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
 
 export const render = (element: Element) => {
   element.$.isAnsysingDependence = true;
-  const renderRes = element.render(element);
-  const renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
+
+  let renderList: RenderFunction[];
+  if (!element.$.hasInit) {
+    const renderRes = element.render(element);
+    renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
+  } else {
+    renderList = Array.from(element.$.updateRenderFunctions);
+    element.$.updateRenderFunctions?.clear();
+  }
   for (const renderFunction of renderList) {
     element.$.currentRenderFunction = renderFunction;
     renderFunction(element.context);

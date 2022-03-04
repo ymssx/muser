@@ -25,15 +25,35 @@ export const isChildsStale = (element: Element) => {
 export const hasChangeProps = (element: Element, props: Data) => {
   if (!element.$.hasInit) return true;
 
+  let flag = false;
   for (const key in props) {
-    if (element.$.dependence.hasOwnProperty(key)) {
-      const res = objectDiff(props[key], element.$.dependence[key].value);
-      if (res) {
-        return true;
+    if (element.$.propsDependence.has(key)) {
+      if (props[key] !== element.$.propsDependence.get(key)?.value) {
+        flag = true;
+        element.$.propsDependence.get(key)?.render?.forEach(renderFunction => {
+          element.$.updateRenderFunctions.add(renderFunction);
+        });
       }
     }
   }
-  return false;
+  return flag;
+};
+
+export const hasChangeState = (element: Element, state: Data) => {
+  if (!element.$.hasInit) return true;
+
+  let flag = false;
+  for (const key in state) {
+    if (element.$.stateDependence.has(key)) {
+      if (state[key] !== element.$.stateDependence.get(key)?.value) {
+        flag = true;
+        element.$.stateDependence.get(key)?.render?.forEach(renderFunction => {
+          element.$.updateRenderFunctions.add(renderFunction);
+        });
+      }
+    }
+  }
+  return flag;
 };
 
 export const isWorthToUpdate = (props: Data, element: Element) => {
