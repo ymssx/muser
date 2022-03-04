@@ -54,7 +54,7 @@ export const initElementPrivateProps = (element: Element) => ({
   isAnsysingDependence: false,
   propsDependence: new Map(),
   stateDependence: new Map(),
-  updateRenderFunctions: new Set(),
+  updateRenderFunctions: new Set<RenderFunction>(),
   currentRenderFunction: null,
   lifecycle: new LifeCycle(element),
   stateReactive: false,
