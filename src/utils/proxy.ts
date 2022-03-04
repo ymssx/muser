@@ -1,8 +1,8 @@
 import Element from '../element';
 import CanvasProxy from '../canvasExtends';
 import { bindTree, bindElements } from './element';
-import { CanvasElement } from 'src/const/common';
-import { Data } from '../const/common';
+import { CanvasElement, Data } from '../const/common';
+import { initCanvas } from '../utils/canvas';
 
 /**
  * a proxy of origin component
@@ -36,7 +36,7 @@ export const getChildProxy = (element: Element) => {
         }
 
         if (father.$.isCollectingChilds) {
-          father.$.tempChildStack.push(target);
+          father.$.childList.unshift(target);
         }
 
         return father.$.elPainterMap[name];
@@ -57,7 +57,10 @@ export const getPropsProxy = (element: Element) => {
         }
 
         if (element.$.isAnsysingDependence) {
-          element.$.dependence[key] = res;
+          element.$.dependence[key] = {
+            value: res,
+            render: element.$.currentRenderFunction,
+          };
         }
 
         return res;
@@ -82,16 +85,15 @@ export const getStateProxy = (element: Element) => {
         }
 
         if (element.$.isAnsysingDependence) {
-          element.$.dependence[key] = res;
+          element.$.dependence[key] = {
+            value: res,
+            render: element.$.currentRenderFunction,
+          };
         }
 
         return res;
       },
       set(originState, key: string, value) {
-        if (element.$.state[key] !== value && element.$.stateReactive) {
-          element.$.stale = true;
-          element.$.updater.registUpdate();
-        }
         element.$.state[key] = value;
         return true;
       },
@@ -100,12 +102,6 @@ export const getStateProxy = (element: Element) => {
 };
 
 export const reactiveState = (element: Element) => {
-  // the updating of 'state' is unreactive in the element init process
-  // TODO: 是不是应该放在生命周期里面做
-  setTimeout(() => {
-    element.$.stateReactive = true;
-  }, 0);
-
   const proxy = getStateProxy(element);
   Object.defineProperty(element, 'state', {
     get() {
@@ -113,10 +109,6 @@ export const reactiveState = (element: Element) => {
     },
     set(newState) {
       element.$.state = newState;
-      if (element.$.stateReactive) {
-        element.$.stale = true;
-        element.$.updater.registUpdate();
-      }
     },
   });
 };
@@ -126,6 +118,8 @@ export const setState = (newState: Data = {}, element: Element) => {
     ...element.state,
     ...newState,
   };
+  element.$.stale = true;
+  element.$.updater.registUpdate();
 };
 
 export const setChildProxy = (element: Element) => {
@@ -144,9 +138,12 @@ export const setChildProxy = (element: Element) => {
       return false;
     },
   });
+  return element.childs;
 };
 
-export const setCanvasProxy = (element: Element) => {
+export const setCanvasProxy = (element: Element): CanvasElement => {
+  element.$.canvas = initCanvas(element);
+
   Object.defineProperty(element, 'canvas', {
     // proxy of canvas, returns father's canvas if 'config.cache' is false
     set(canvas: CanvasElement) {
@@ -163,4 +160,6 @@ export const setCanvasProxy = (element: Element) => {
       return element.$.canvas as CanvasElement;
     },
   });
+
+  return element.canvas;
 };

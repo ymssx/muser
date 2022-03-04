@@ -1,4 +1,4 @@
-import { CanvasElement, Data } from '../const/common';
+import { CanvasElement, Data, RenderFunction } from '../const/common';
 import { ElementConfigExtend } from '../const/element';
 import { PaintConfig } from '../const/render';
 import Element from '../element';
@@ -15,14 +15,19 @@ export interface ElementPrivateProps {
   state: Data;
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
-  tempChildStack: Element[];
   childList: Element[];
   childMap: { [name: string]: Element };
   childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
-  dependence: Data;
+  dependence: {
+    [key: string]: {
+      value: unknown,
+      render: RenderFunction | null,
+    };
+  };
   isAnsysingDependence: boolean;
+  currentRenderFunction: RenderFunction | null;
   lifecycle: LifeCycle;
   stateReactive: boolean;
   positionSnapshots: [[number[], number[]], PaintConfig][];
@@ -44,7 +49,6 @@ export const initElementPrivateProps = (element: Element) => ({
   state: {},
   elPainterMap: {},
   isCollectingChilds: false,
-  tempChildStack: [],
   childList: [],
   childMap: {},
   childs: {},
@@ -52,6 +56,7 @@ export const initElementPrivateProps = (element: Element) => ({
   hasInit: false,
   isAnsysingDependence: false,
   dependence: {},
+  currentRenderFunction: null,
   lifecycle: new LifeCycle(element),
   stateReactive: false,
   positionSnapshots: [],

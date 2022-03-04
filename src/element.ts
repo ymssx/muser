@@ -1,8 +1,7 @@
-import { Data, CanvasElement } from './const/common';
+import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { renderSlot } from './render/render';
-import { initCanvas } from './utils/canvas';
 import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
 import CanvasProxy from './canvasExtends';
@@ -22,7 +21,7 @@ export default abstract class Element {
   public childMap: { [name: string]: Element } = {};
 
   // canvas render method
-  abstract render(element: Element): void;
+  abstract render(element: Element): RenderFunction | RenderFunction[];
   public slot(name = 'default') {
     renderSlot(this, name);
   }
@@ -56,13 +55,11 @@ export default abstract class Element {
      *   - bind a Proxy to return whether itself Canvas or father's Canvas
      *   - which depends on the value of 'config.cache'
      */
-    setChildProxy(this);
-    setCanvasProxy(this);
+    this.childs = setChildProxy(this);
+    this.canvas = setCanvasProxy(this);
 
     // set a Proxy to record the reading action of 'Props'
     this.props = getPropsProxy(this);
-    this.canvas = initCanvas(this);
-
     reactiveState(this); // listen for state changes
 
     this.$.lifecycle.start();

@@ -1,8 +1,9 @@
 {
-  "name": "muse",
-  "version": "1.0.0",
+  "name": "muser",
+  "version": "1.0.4-beta.1.5",
   "description": "Framework to help you build complex canvas applications",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint 'src/**/*.{js,ts}'",
     "prettier": "prettier --single-quote --print-width 120 --parser typescript --write \"./src/**/*.ts\"",
@@ -13,7 +14,8 @@
     "tsbuild": "tsc -p ./tsconfig.build.json",
     "build": "webpack",
     "postbuild": "npm run prettier",
-    "release": "echo \"have no script yet...\" && exit 1"
+    "release": "echo \"have no script yet...\" && exit 1",
+    "pub": "./scripts/publish.sh"
   },
   "repository": {
     "type": "git",

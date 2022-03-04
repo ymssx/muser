@@ -2,6 +2,7 @@ import Element from '../element';
 import Updater from './updater';
 import { PaintConfig } from '../const/render';
 import { updateProps } from './updateCheck';
+import { Data } from '../const/common';
 
 export const canDirectUpdate = (element: Element) => true;
 
@@ -14,17 +15,30 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
   }
 };
 
-export const updateElementTree = (element: Element) => {
+export const render = (element: Element) => {
+  element.$.isAnsysingDependence = true;
+  const renderRes = element.render(element);
+  const renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
+  for (const renderFunction of renderList) {
+    element.$.currentRenderFunction = renderFunction;
+    renderFunction(element.context);
+  }
+  element.$.isAnsysingDependence = false;
+};
+
+export const updateElementTree = (element: Element, props?: Data) => {
+  if (props) {
+    element.$.props = props;
+  }
+
   // if component is not stale, skip rerender
   if (element.$.stale) {
     const { context } = element;
+
     context.save();
-
-    element.$.isAnsysingDependence = true;
-    element.render(element);
-    element.$.isAnsysingDependence = false;
-
+    render(element);
     context.restore();
+
     element.$.stale = false;
     element.$.hasInit = true;
   }
@@ -99,7 +113,7 @@ export const getPaintTarget = (element: Element): Element => {
 };
 
 export const directUpdate = (element: Element) => {
-  // root element
+  // is root element
   if (!element.$.father) {
     updateElementTree(element);
     return;

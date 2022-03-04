@@ -27,7 +27,7 @@ export const hasChangeProps = (element: Element, props: Data) => {
 
   for (const key in props) {
     if (element.$.dependence.hasOwnProperty(key)) {
-      const res = objectDiff(props[key], element.$.dependence[key]);
+      const res = objectDiff(props[key], element.$.dependence[key].value);
       if (res) {
         return true;
       }

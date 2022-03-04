@@ -1,0 +1,2 @@
+yarn tsbuild
+npm publish
