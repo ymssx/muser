@@ -25,14 +25,16 @@ export const isChildsStale = (element: Element) => {
 export const hasChangeProps = (element: Element, props: Data) => {
   if (!element.$.hasInit) return true;
 
+  const oldProps = element.$.props;
   let flag = false;
+
   for (const key in props) {
-    if (element.$.propsDependence.has(key)) {
-      if (props[key] !== element.$.propsDependence.get(key)?.value) {
-        flag = true;
-        element.$.propsDependence.get(key)?.render?.forEach(renderFunction => {
+    if (oldProps[key] !== props[key]) {
+      flag = true;
+      for (const [renderFunction, { propSet }] of element.$.dependence) {
+        if (propSet?.has(key)) {
           element.$.updateRenderFunctions.add(renderFunction);
-        });
+        }
       }
     }
   }
@@ -42,14 +44,16 @@ export const hasChangeProps = (element: Element, props: Data) => {
 export const hasChangeState = (element: Element, state: Data) => {
   if (!element.$.hasInit) return true;
 
+  const oldState = element.$.state;
   let flag = false;
+
   for (const key in state) {
-    if (element.$.stateDependence.has(key)) {
-      if (state[key] !== element.$.stateDependence.get(key)?.value) {
-        flag = true;
-        element.$.stateDependence.get(key)?.render?.forEach(renderFunction => {
+    if (oldState[key] !== state[key]) {
+      flag = true;
+      for (const [renderFunction, { stateSet }] of element.$.dependence) {
+        if (stateSet?.has(key)) {
           element.$.updateRenderFunctions.add(renderFunction);
-        });
+        }
       }
     }
   }

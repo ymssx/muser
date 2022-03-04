@@ -57,20 +57,17 @@ export const getPropsProxy = (element: Element) => {
           res = element.$.props[key];
         }
 
-        if (element.$.isAnsysingDependence) {
-          if (!element.$.propsDependence.has(key)) {
-            element.$.propsDependence.set(key, {
-              value: res,
-              render: new Set(),
+        if (element.$.isAnsysingDependence && element.$.currentRenderFunction) {
+          const renderFunction = element.$.currentRenderFunction;
+          if (!element.$.dependence.has(renderFunction)) {
+            element.$.dependence.set(renderFunction , {
+              stateSet: new Set(),
+              propSet: new Set(),
             });
           }
-          const dependence = element.$.propsDependence.get(key);
-          if (!dependence) {
-            throw new Error(`can't get props ${key} from 'element.$.propsDependence'`);
-          }
-          dependence.value = res;
-          if (element.$.currentRenderFunction) {
-            dependence.render.add(element.$.currentRenderFunction);
+          const dependenceSet = element.$.dependence.get(renderFunction);
+          if (dependenceSet) {
+            dependenceSet.propSet.add(key);
           }
         }
 
@@ -95,20 +92,17 @@ export const getStateProxy = (element: Element) => {
           res = element.$.state[key];
         }
 
-        if (element.$.isAnsysingDependence) {
-          if (!element.$.stateDependence.has(key)) {
-            element.$.stateDependence.set(key, {
-              value: res,
-              render: new Set(),
+        if (element.$.isAnsysingDependence && element.$.currentRenderFunction) {
+          const renderFunction = element.$.currentRenderFunction;
+          if (!element.$.dependence.has(renderFunction)) {
+            element.$.dependence.set(renderFunction , {
+              stateSet: new Set(),
+              propSet: new Set(),
             });
           }
-          const dependence = element.$.stateDependence.get(key);
-          if (!dependence) {
-            throw new Error(`can't get state ${key} from 'element.$.stateDependence'`);
-          }
-          dependence.value = res;
-          if (element.$.currentRenderFunction) {
-            dependence.render.add(element.$.currentRenderFunction);
+          const dependenceSet = element.$.dependence.get(renderFunction);
+          if (dependenceSet) {
+            dependenceSet.stateSet.add(key);
           }
         }
 
