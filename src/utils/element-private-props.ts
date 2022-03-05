@@ -3,7 +3,7 @@ import { ElementConfigExtend } from '../const/element';
 import { PaintConfig } from '../const/render';
 import Element from '../element';
 import Updater from '../render/updater';
-import CanvasProxy from '../canvasExtends';
+import ChildProxy from '../render/child';
 import LifeCycle from '../lifecycle';
 
 export interface ElementPrivateProps {
@@ -17,13 +17,14 @@ export interface ElementPrivateProps {
   isCollectingChilds: boolean;
   childList: Element[];
   childMap: { [name: string]: Element };
-  childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy };
+  childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy };
   stale: boolean; // if component need update
   hasInit: boolean; // if the component rendered for the first time
-  dependence: Map<RenderFunction, { stateSet: Set<string>, propSet: Set<string> }>;
-  updateRenderFunctions: Set<RenderFunction>;
+  dependence: Map<number, { stateSet: Set<string>; propSet: Set<string> }>;
+  renderFunctions: RenderFunction[];
+  updateRenderFunctions: Set<number>;
+  currentRenderFunctionIndex: number;
   isAnsysingDependence: boolean;
-  currentRenderFunction: RenderFunction | null;
   lifecycle: LifeCycle;
   stateReactive: boolean;
   positionSnapshots: [[number[], number[]], PaintConfig][];
@@ -35,6 +36,7 @@ export interface ElementPrivateProps {
   processSet: Set<(element: Element) => void>;
   slotsMap: Map<string, (element: Element) => void>;
   eventMap: Map<string, Set<Function>>;
+  useElementIndex: number;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -53,8 +55,9 @@ export const initElementPrivateProps = (element: Element) => ({
   hasInit: false,
   isAnsysingDependence: false,
   dependence: new Map(),
-  updateRenderFunctions: new Set<RenderFunction>(),
-  currentRenderFunction: null,
+  renderFunctions: [],
+  updateRenderFunctions: new Set<number>(),
+  currentRenderFunctionIndex: -1,
   lifecycle: new LifeCycle(element),
   stateReactive: false,
   positionSnapshots: [],
@@ -66,4 +69,5 @@ export const initElementPrivateProps = (element: Element) => ({
   processSet: new Set<(element: Element) => void>(),
   slotsMap: new Map<string, (element: Element) => void>(),
   eventMap: new Map(),
+  useElementIndex: 0,
 });

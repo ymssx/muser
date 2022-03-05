@@ -1,11 +1,11 @@
-import { Data } from './const/common';
-import { ElementConfigExtend } from './const/element';
-import { PaintConfig } from './const/render';
-import Element from './element';
-import { renderToFather, updateElementTree } from './render/render';
-import { updateProps } from './render/updateCheck';
+import { Data } from '../const/common';
+import { ElementConfigExtend } from '../const/element';
+import { PaintConfig } from '../const/render';
+import Element from '../element';
+import { renderToFather, updateElementTree } from '../render/render';
+import { updateProps } from '../render/updateCheck';
 
-export default class CanvasProxy {
+export default class ChildProxy {
   element: Element;
   constructor(element: Element) {
     this.element = element;

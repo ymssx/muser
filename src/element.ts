@@ -2,10 +2,10 @@ import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { renderSlot } from './render/render';
-import { getPropsProxy, getStateProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
-import { ElementPrivateProps, initElementPrivateProps } from './utils/elementPrivateProps';
-import CanvasProxy from './canvasExtends';
-import { addEventListener } from './event/index';
+import { getPropsProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
+import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
+import ChildProxy from './render/child';
+import { addEventListener, EventCallBack } from './event/index';
 
 export default abstract class Element {
   /**
@@ -18,7 +18,7 @@ export default abstract class Element {
   public state: Data = {};
   public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
-  public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => CanvasProxy } = {};
+  public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy } = {};
   public childMap: { [name: string]: Element } = {};
 
   // canvas render method
@@ -36,13 +36,17 @@ export default abstract class Element {
   public setState(newProps: Data) {
     return setState(newProps, this);
   }
-  
-  public addEventListener(eventName: string, callback: Function) {
+
+  public addEventListener(eventName: string, callback: EventCallBack) {
     return addEventListener(this, eventName, callback);
   }
 
   get context() {
     return this.canvas.getContext('2d') as CanvasRenderingContext2D;
+  }
+
+  get PR() {
+    return window.devicePixelRatio;
   }
 
   constructor(config: ElementConfigExtend) {

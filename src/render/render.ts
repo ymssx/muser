@@ -3,6 +3,7 @@ import Updater from './updater';
 import { PaintConfig } from '../const/render';
 import { updateProps } from './updateCheck';
 import { Data, RenderFunction } from '../const/common';
+import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
 export const canDirectUpdate = (element: Element) => true;
 
@@ -16,35 +17,52 @@ export const signUpdateChain = (leaf: Element, updater: Updater) => {
 };
 
 export const updateElementTree = (element: Element, props?: Data) => {
+  /**
+   * render function of a Element
+   */
+
   if (props) {
     element.$.props = props;
   }
 
   // if component is not stale, skip rerender
   if (element.$.stale) {
+    // init some props before rendering
+    setCurrentRenderElement(element);
+
     const { context } = element;
 
     element.$.isAnsysingDependence = true;
+    element.$.isCollectingChilds = true;
 
-    let renderList: RenderFunction[];
+    let renderList: number[];
     if (!element.$.hasInit) {
       const renderRes = element.render(element);
-      renderList = Array.isArray(renderRes) ? renderRes : [renderRes];
+      element.$.renderFunctions = Array.isArray(renderRes) ? renderRes : [renderRes];
+      renderList = [];
+      for (let index = 0; index < element.$.renderFunctions.length; index += 1) {
+        renderList.push(index);
+      }
     } else {
       renderList = Array.from(element.$.updateRenderFunctions);
       element.$.updateRenderFunctions?.clear();
     }
-    for (const renderFunction of renderList) {
-      element.$.currentRenderFunction = renderFunction;
+
+    for (const index of renderList) {
+      element.$.currentRenderFunctionIndex = index;
       context.save();
+      const renderFunction = element.$.renderFunctions[index];
+      element.$.useElementIndex = 0;
       renderFunction(element.context);
       context.restore();
     }
 
     element.$.isAnsysingDependence = false;
+    element.$.isCollectingChilds = false;
 
     element.$.stale = false;
     element.$.hasInit = true;
+    exitCurrentRenderElement();
   }
 };
 

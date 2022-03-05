@@ -11,8 +11,8 @@
     "test": "jest",
     "clean": "rm -rf ./dist",
     "prebuild": "npm run clean",
-    "tsbuild": "tsc -p ./tsconfig.build.json",
-    "build": "webpack",
+    "build": "tsc -p ./tsconfig.build.json",
+    "wpbuild": "webpack",
     "postbuild": "npm run prettier",
     "release": "echo \"have no script yet...\" && exit 1",
     "pub": "./scripts/publish.sh"

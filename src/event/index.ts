@@ -37,7 +37,9 @@ export const listenEvent = (element: Element) => {
   });
 };
 
-export const addEventListener = (element: Element, eventName: string, callback: Function) => {
+export type EventCallBack = (event: ElementEvent) => void;
+
+export const addEventListener = (element: Element, eventName: string, callback: EventCallBack) => {
   const map = element.$.eventMap;
   if (!map.has(eventName)) {
     map.set(eventName, new Set());
@@ -49,29 +51,26 @@ export const addEventListener = (element: Element, eventName: string, callback: 
 export const trigerEvent = (element: Element, event: ElementEvent) => {
   const map = element.$.eventMap;
   if (map.has(event?.name)) {
-    map.get(event.name)?.forEach(callback => callback(event));
+    map.get(event.name)?.forEach((callback) => callback(event));
   }
 };
 
 export const broadcastEvent = (element: Element, event: ElementEvent) => {
   trigerEvent(element, event);
   const { x, y } = event;
-  element.$.childList?.forEach(child => {
+  element.$.childList?.forEach((child) => {
     const { width, height } = child.config;
     child.$.positionSnapshots?.forEach((snap) => {
       const [[xs, ys]] = snap;
       const currentX = xs[xs.length - 1];
       const currentY = ys[ys.length - 1];
-      if (
-        (x >= currentX && x <= (currentX + width))
-        && (y >= currentY && y <= (currentY + height))
-      ) {
+      if (x >= currentX && x <= currentX + width && y >= currentY && y <= currentY + height) {
         broadcastEvent(child, {
           ...event,
           x: x - currentX,
           y: y - currentY,
         });
       }
-    })
+    });
   });
 };

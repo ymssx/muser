@@ -1,5 +1,5 @@
 import Element from '../element';
-import CanvasProxy from '../canvasExtends';
+import ChildProxy from '../render/child';
 import { bindTree, bindElements } from './element';
 import { CanvasElement, Data } from '../const/common';
 import { initCanvas } from '../utils/canvas';
@@ -27,12 +27,12 @@ export const getChildProxy = (element: Element) => {
         }
 
         if (!father) {
-          const ext = new CanvasProxy(target);
+          const ext = new ChildProxy(target);
           return ext.updateProps.bind(ext);
         }
 
         if (!father.$.elPainterMap[name]) {
-          const ext = new CanvasProxy(target);
+          const ext = new ChildProxy(target);
           father.$.elPainterMap[name] = ext.updateProps.bind(ext);
         }
 
@@ -57,15 +57,15 @@ export const getPropsProxy = (element: Element) => {
           res = element.$.props[key];
         }
 
-        if (element.$.isAnsysingDependence && element.$.currentRenderFunction) {
-          const renderFunction = element.$.currentRenderFunction;
-          if (!element.$.dependence.has(renderFunction)) {
-            element.$.dependence.set(renderFunction , {
+        if (element.$.isAnsysingDependence && element.$.currentRenderFunctionIndex !== -1) {
+          const renderFunctionIndex = element.$.currentRenderFunctionIndex;
+          if (!element.$.dependence.has(renderFunctionIndex)) {
+            element.$.dependence.set(renderFunctionIndex, {
               stateSet: new Set(),
               propSet: new Set(),
             });
           }
-          const dependenceSet = element.$.dependence.get(renderFunction);
+          const dependenceSet = element.$.dependence.get(renderFunctionIndex);
           if (dependenceSet) {
             dependenceSet.propSet.add(key);
           }
@@ -92,15 +92,15 @@ export const getStateProxy = (element: Element) => {
           res = element.$.state[key];
         }
 
-        if (element.$.isAnsysingDependence && element.$.currentRenderFunction) {
-          const renderFunction = element.$.currentRenderFunction;
-          if (!element.$.dependence.has(renderFunction)) {
-            element.$.dependence.set(renderFunction , {
+        if (element.$.isAnsysingDependence && element.$.currentRenderFunctionIndex !== -1) {
+          const renderFunctionIndex = element.$.currentRenderFunctionIndex;
+          if (!element.$.dependence.has(renderFunctionIndex)) {
+            element.$.dependence.set(renderFunctionIndex, {
               stateSet: new Set(),
               propSet: new Set(),
             });
           }
-          const dependenceSet = element.$.dependence.get(renderFunction);
+          const dependenceSet = element.$.dependence.get(renderFunctionIndex);
           if (dependenceSet) {
             dependenceSet.stateSet.add(key);
           }
@@ -137,7 +137,7 @@ export const setState = (newState: Data = {}, element: Element) => {
 
     element.$.stale = true;
     element.$.updater.registUpdate();
-  };
+  }
 };
 
 export const setChildProxy = (element: Element) => {

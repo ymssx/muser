@@ -1,4 +1,3 @@
-import { objectDiff } from '../utils/common';
 import { Data } from '../const/common';
 import Element from '../element';
 
@@ -32,9 +31,9 @@ export const hasChangeProps = (element: Element, props: Data) => {
   for (const key in props) {
     if (oldProps[key] !== props[key]) {
       flag = true;
-      for (const [renderFunction, { propSet }] of element.$.dependence) {
+      for (const [renderFunctionIndex, { propSet }] of element.$.dependence) {
         if (propSet?.has(key)) {
-          element.$.updateRenderFunctions.add(renderFunction);
+          element.$.updateRenderFunctions.add(renderFunctionIndex);
         }
       }
     }
@@ -51,9 +50,9 @@ export const hasChangeState = (element: Element, state: Data) => {
   for (const key in state) {
     if (oldState[key] !== state[key]) {
       flag = true;
-      for (const [renderFunction, { stateSet }] of element.$.dependence) {
+      for (const [renderFunctionIndex, { stateSet }] of element.$.dependence) {
         if (stateSet?.has(key)) {
-          element.$.updateRenderFunctions.add(renderFunction);
+          element.$.updateRenderFunctions.add(renderFunctionIndex);
         }
       }
     }

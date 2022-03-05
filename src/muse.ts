@@ -14,7 +14,7 @@ export default class Muse {
   constructor(childs: Element[]) {
     this.childs = childs;
 
-    this.childs.forEach(element => {
+    this.childs.forEach((element) => {
       // listen for dom events
       listenEvent(element);
     });
