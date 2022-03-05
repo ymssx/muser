@@ -15,7 +15,13 @@ A Canvas Componentization Framework to Help You Build Complex UI.
 ## Install
 
 ```shell
-yarn add muse
+npm install muser
+```
+
+or
+
+```shell
+yarn add muser
 ```
 
 ## Usage

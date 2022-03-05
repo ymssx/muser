@@ -1,5 +1,9 @@
 # Muse
 
+<a href="https://www.npmjs.com/package/muser">
+  <img src="https://img.shields.io/npm/v/muser"/>
+</a>
+
 [English](https://github.com/ymssx/muse/blob/master/README.md)
 
 构建复杂UI的Canvas组件化框架.
@@ -11,7 +15,13 @@
 ## 安装
 
 ```shell
-npm install muse --save
+npm install muser
+```
+
+或者
+
+```shell
+yarn add muser
 ```
 
 ## 使用
@@ -27,14 +37,16 @@ import { Element } from 'muse';
 
 class Container extends Element {
   // 自定义组件的内容
-  render({ context }) {
-    context.fillStyle = '#DDDDDD';
-    context.fillRect(0, 0, 300, 1000);
+  render() {
+    return (context) => {
+      context.fillStyle = '#DDDDDD';
+      context.fillRect(0, 0, 300, 1000);
+    }
   }
 }
 ```
 
-`render`方法会返回本组件的Canvas元素，或者前者的上下文`context`，你可以使用它进行自定义的Canvas画布绘制。
+`render`方法需要返回一个绘制函数，参数为Canvas上下文`context`，你可以使用它进行自定义的Canvas画布绘制。
 
 ### 给组件传递参数
 
@@ -42,15 +54,17 @@ class Container extends Element {
 
 ```js
 class Block extends Element {
-  render({ context, props }) {
-    // 约定需要外部传递的参数
-    const { boxColor } = props;
+  render({ props }) {
+    return (context) => {
+      // 约定需要外部传递的参数
+      const { boxColor } = props;
 
-    context.fillStyle = boxColor || 'blue';
-    context.fillRect(0, 0, 49, 49);
-    context.fillRect(51, 0, 100, 49);
-    context.fillRect(0, 51, 49, 100);
-    context.fillRect(51, 51, 100, 100);
+      context.fillStyle = boxColor || 'blue';
+      context.fillRect(0, 0, 49, 49);
+      context.fillRect(51, 0, 100, 49);
+      context.fillRect(0, 51, 49, 100);
+      context.fillRect(51, 51, 100, 100);
+    };
   }
 }
 ```
@@ -74,23 +88,25 @@ class Container extends Element {
   // 在这里引用其它组件，并指定尺寸
   block = new Block({ width: 100, height: 100 });
 
-  render({ context, childs }) {
+  render({ childs }) {
     // 从childs中访问上面指定的组件
     const { block } = childs;
 
-    context.fillStyle = '#DDDDDD';
-    context.fillRect(0, 0, 300, 1000);
+    return (context) => {
+      context.fillStyle = '#DDDDDD';
+      context.fillRect(0, 0, 300, 1000);
 
-    block({
-      boxColor: 'green', // 传递的参数
-    })
-      .process(({ context }) => {
-        // 后处理，可以对block组件的视图进行二次绘制
+      block({
+        boxColor: 'green', // 传递的参数
       })
-      .paste({
-        x: 0, // 在父组件中粘贴的x坐标
-        y: 0, // 在父组件中粘贴的y坐标
-      });
+        .process(({ context }) => {
+          // 后处理，可以对block组件的视图进行二次绘制
+        })
+        .paste({
+          x: 0, // 在父组件中粘贴的x坐标
+          y: 0, // 在父组件中粘贴的y坐标
+        });
+    };
   }
 }
 ```
@@ -126,21 +142,24 @@ class Container extends Element {
     }, 1000);
   }
 
-  render({ context, childs, state }) {
-    // 读取内部状态state
-    const { y } = state;
+  render({ childs, state }) {
     const { block } = childs;
 
-    context.fillStyle = '#DDDDDD';
-    context.fillRect(0, 0, 300, 1000);
+    return (context) => {
+      // 读取内部状态state
+      const { y } = state;
 
-    block({
-      boxColor: 'green',
-    })
-      .paste({
-        x: 100,
-        y,  // 动态调整坐标，随着state下降
-      });
+      context.fillStyle = '#DDDDDD';
+      context.fillRect(0, 0, 300, 1000);
+
+      block({
+        boxColor: 'green',
+      })
+        .paste({
+          x: 100,
+          y,  // 动态调整坐标，随着state下降
+        });
+    };
   }
 }
 ```
