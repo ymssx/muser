@@ -26,3 +26,43 @@ yarn add muser
 
 ## Usage
 
+```js
+import { Element, useElement } from 'muser';
+import ChildrenElement from 'src/components/children-element';
+
+export default class HelloWord extends Element {
+  state = { width: 10, color: 'green' };
+
+  render({ state, props }) {
+    const child = useElement(ChildrenElement, {
+      width: 100,
+      height: 100,
+      key: 'child-element',
+    });
+
+    return [
+      // re-render when 'width' and 'value' was changed
+      (context) => {
+        const { width } = state;
+        const { value } = props;
+
+        context.fillRect(0, 0, width, width);
+        child({ value })
+          .paste({  x: 0, y: 0 });
+      },
+      // re-render when 'color' was changed
+      (context) => {
+        const { color } = state;
+
+        context.fillStyle = color;
+        context.fillRect(0, 0, width, width);
+      },
+    ];
+  }
+}
+```
+
+## Document
+
+[See Document](https://github.com/ymssx/muse/blob/master/README_CN.md)
+
