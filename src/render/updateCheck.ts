@@ -30,9 +30,9 @@ export const hasChangeProps = (element: Element, props: Data) => {
   let flag = false;
   for (const key in props) {
     if (oldProps[key] !== props[key]) {
-      flag = true;
       for (const [renderFunctionIndex, { propSet }] of element.$.dependence) {
         if (propSet?.has(key)) {
+          flag = true;
           element.$.updateRenderFunctions.add(renderFunctionIndex);
         }
       }
@@ -49,9 +49,9 @@ export const hasChangeState = (element: Element, state: Data) => {
   let flag = false;
   for (const key in state) {
     if (oldState[key] !== state[key]) {
-      flag = true;
       for (const [renderFunctionIndex, { stateSet }] of element.$.dependence) {
         if (stateSet?.has(key)) {
+          flag = true;
           element.$.updateRenderFunctions.add(renderFunctionIndex);
         }
       }
