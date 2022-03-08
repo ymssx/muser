@@ -41,6 +41,12 @@ export default abstract class Element {
     return addEventListener(this, eventName, callback);
   }
 
+  public changeCursor(cursor: string) {
+    if (this.$.root && this.$.root.canvas instanceof HTMLCanvasElement) {
+      this.$.root.canvas.style.cursor = cursor;
+    }
+  }
+
   get context() {
     return this.canvas.getContext('2d') as CanvasRenderingContext2D;
   }

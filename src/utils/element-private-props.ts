@@ -1,6 +1,6 @@
 import { CanvasElement, Data, RenderFunction } from '../const/common';
 import { ElementConfigExtend } from '../const/element';
-import { PaintConfig } from '../const/render';
+import { PaintConfig, StaleStatus } from '../const/render';
 import Element from '../element';
 import Updater from '../render/updater';
 import ChildProxy from '../render/child';
@@ -18,12 +18,13 @@ export interface ElementPrivateProps {
   childList: Element[];
   childMap: { [name: string]: Element };
   childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy };
-  stale: boolean; // if component need update
+  stale: StaleStatus; // if component need update
   hasInit: boolean; // if the component rendered for the first time
   dependence: Map<number, { stateSet: Set<string>; propSet: Set<string> }>;
   renderFunctions: RenderFunction[];
   updateRenderFunctions: Set<number>;
   currentRenderFunctionIndex: number;
+  fatherRenderFunctionIndex: number;
   isAnsysingDependence: boolean;
   lifecycle: LifeCycle;
   stateReactive: boolean;
@@ -37,6 +38,7 @@ export interface ElementPrivateProps {
   slotsMap: Map<string, (element: Element) => void>;
   eventMap: Map<string, Set<Function>>;
   useElementIndex: number;
+  mouseIn: boolean;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -51,13 +53,14 @@ export const initElementPrivateProps = (element: Element) => ({
   childList: [],
   childMap: {},
   childs: {},
-  stale: true,
+  stale: StaleStatus.Stale,
   hasInit: false,
   isAnsysingDependence: false,
   dependence: new Map(),
   renderFunctions: [],
   updateRenderFunctions: new Set<number>(),
   currentRenderFunctionIndex: -1,
+  fatherRenderFunctionIndex: 0,
   lifecycle: new LifeCycle(element),
   stateReactive: false,
   positionSnapshots: [],
@@ -70,4 +73,5 @@ export const initElementPrivateProps = (element: Element) => ({
   slotsMap: new Map<string, (element: Element) => void>(),
   eventMap: new Map(),
   useElementIndex: 0,
+  mouseIn: false,
 });

@@ -14,6 +14,7 @@ export const useElement = (ElementClass: { new (config: ElementConfig): Element 
   if (!currentElement) {
     throw new Error('no Element is Rendering');
   }
+  const currentFunctionIndex = currentElement.$.currentRenderFunctionIndex;
 
   let elementName;
   if (!config.key) {
@@ -21,7 +22,7 @@ export const useElement = (ElementClass: { new (config: ElementConfig): Element 
       `[Muser Warning]: we suggest to set 'key' in 'config' while you're using 'useElement()', or it might make mistakes when you use it in 'if' or 'for' section`
     );
 
-    const currentRenderFunctionIndex = currentElement.$.currentRenderFunctionIndex;
+    const currentRenderFunctionIndex = currentFunctionIndex;
     const currentElementIndex = currentElement.$.useElementIndex;
     elementName = `__private_child_${currentRenderFunctionIndex}_${currentElementIndex}__`;
   } else {
@@ -31,6 +32,7 @@ export const useElement = (ElementClass: { new (config: ElementConfig): Element 
   if (!currentElement.$.elPainterMap[elementName]) {
     const element = new ElementClass(config);
     currentElement.$.childMap[elementName] = element;
+    currentElement.$.fatherRenderFunctionIndex = currentFunctionIndex;
     bindElements(currentElement, element);
     const child = new ChildProxy(element);
     currentElement.$.elPainterMap[elementName] = child.updateProps.bind(child);

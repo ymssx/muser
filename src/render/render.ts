@@ -1,18 +1,19 @@
 import Element from '../element';
 import Updater from './updater';
-import { PaintConfig } from '../const/render';
+import { PaintConfig, StaleStatus } from '../const/render';
 import { updateProps } from './updateCheck';
 import { Data, RenderFunction } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
-export const canDirectUpdate = (element: Element) => true;
+export const canDirectUpdate = (element: Element) => false;
 
-export const signUpdateChain = (leaf: Element, updater: Updater) => {
-  leaf.$.stale = true;
-  if (canDirectUpdate(leaf)) {
-    updater.add(leaf);
-  } else if (leaf.$.father) {
-    signUpdateChain(leaf.$.father, updater);
+export const signUpdateChain = (leaf: Element, status: StaleStatus) => {
+  if (leaf.$.stale !== StaleStatus.Stale) {
+    leaf.$.stale = status;
+  }
+  if (leaf.$.father) {
+    leaf.$.father.$.updateRenderFunctions.add(leaf.$.fatherRenderFunctionIndex);
+    signUpdateChain(leaf.$.father, StaleStatus.Stale);
   }
 };
 
@@ -29,11 +30,10 @@ export const updateElementTree = (element: Element, props?: Data) => {
   if (element.$.stale) {
     // init some props before rendering
     setCurrentRenderElement(element);
-
-    const { context } = element;
-
     element.$.isAnsysingDependence = true;
     element.$.isCollectingChilds = true;
+
+    const { context } = element;
 
     let renderList: number[];
     if (!element.$.hasInit) {
@@ -59,9 +59,9 @@ export const updateElementTree = (element: Element, props?: Data) => {
 
     element.$.isAnsysingDependence = false;
     element.$.isCollectingChilds = false;
-
-    element.$.stale = false;
+    element.$.stale = StaleStatus.UnStale;
     element.$.hasInit = true;
+    element.$.currentRenderFunctionIndex = -1;
     exitCurrentRenderElement();
   }
 };
@@ -139,13 +139,6 @@ export const directUpdate = (element: Element) => {
   if (!element.$.father) {
     updateElementTree(element);
     return;
-  }
-
-  if (!canDirectUpdate(element)) {
-    if (element.$.father) {
-      directUpdate(element.$.father);
-      return;
-    }
   }
 
   const target = getPaintTarget(element);

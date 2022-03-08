@@ -1,5 +1,6 @@
 import Element from '../element';
-import { canDirectUpdate, directUpdate } from './render';
+import { signUpdateChain, directUpdate, canDirectUpdate, updateElementTree } from './render';
+import { StaleStatus } from '../const/render';
 
 export default class Updater {
   private element: Element;
@@ -20,13 +21,24 @@ export default class Updater {
     this.coverElements.add(element);
   }
 
-  update() {
+  beginUpdate() {
+    updateElementTree(this.element);
     directUpdate(this.element);
     this.ticket = null;
   }
 
   registUpdate() {
     if (this.ticket) cancelAnimationFrame(this.ticket);
-    this.ticket = requestAnimationFrame(() => this.update());
+    this.ticket = requestAnimationFrame(() => this.beginUpdate());
+  }
+
+  update() {
+    signUpdateChain(this.element, StaleStatus.Updater);
+
+    let updateRoot = this.element;
+    while (!canDirectUpdate(updateRoot) && updateRoot.$.father) {
+      updateRoot = updateRoot.$.father;
+    }
+    updateRoot.$.updater.registUpdate();
   }
 }

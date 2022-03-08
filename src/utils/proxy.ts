@@ -4,6 +4,7 @@ import { bindTree, bindElements } from './element';
 import { CanvasElement, Data } from '../const/common';
 import { initCanvas } from '../utils/canvas';
 import { hasChangeState } from '../render/updateCheck';
+import { StaleStatus } from '../const/render';
 
 /**
  * a proxy of origin component
@@ -135,8 +136,8 @@ export const setState = (newState: Data = {}, element: Element) => {
       ...newState,
     };
 
-    element.$.stale = true;
-    element.$.updater.registUpdate();
+    element.$.stale = StaleStatus.Updater;
+    element.$.updater.update();
   }
 };
 

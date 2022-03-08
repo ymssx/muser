@@ -1,9 +1,10 @@
+import { StaleStatus } from '../const/render';
 import { Data } from '../const/common';
 import Element from '../element';
 
 export const updateProps = (element: Element, props: Data) => {
   if (hasChangeProps(element, props)) {
-    element.$.stale = true;
+    element.$.stale = StaleStatus.Updater;
     element.$.props = {
       ...element.$.props,
       ...props,
