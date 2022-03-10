@@ -6,13 +6,13 @@ export default class Link extends Element {
   };
 
   created() {
-    this.addEventListener('mousemove', () => {
+    this.addEventListener('in', () => {
       this.setState({
         activate: true,
       });
       this.changeCursor('pointer');
     });
-    this.addEventListener('mouseout', () => {
+    this.addEventListener('out', () => {
       this.setState({
         activate: false,
       });
@@ -39,12 +39,18 @@ export default class Link extends Element {
         const { text } = props;
         const { activate } = state;
 
+        ctx.font = '14px normal';
+        ctx.fillStyle = COLOR;
+        ctx.textBaseline = 'middle';
+
         if (activate) {
-          ctx.fillStyle = COLOR;
-          ctx.fillRect(0, 20, ctx.measureText(text).width, 2);
+          ctx.strokeStyle = COLOR;
+          ctx.lineWidth = 1;
+          ctx.moveTo(0, 21.5);
+          ctx.lineTo(ctx.measureText(text).width, 21.5);
+          ctx.stroke();
         } else {
-          ctx.fillStyle = '#FFF';
-          ctx.fillRect(0, 20, ctx.measureText(text).width, 2);
+          ctx.clearRect(0, 21, ctx.measureText(text).width, 2);
         }
       },
     ];

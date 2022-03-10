@@ -36,3 +36,9 @@ export default class ChildProxy {
     return this;
   }
 }
+
+export const addChildList = (element: Element, child: Element) => {
+  const currentChildList = element.$.childList;
+  currentChildList.unshift(child);
+  element.$.childList = Array.from(new Set(currentChildList));
+};

@@ -1,5 +1,5 @@
 import Element from '../element';
-import ChildProxy from '../render/child';
+import ChildProxy, { addChildList } from '../render/child';
 import { bindTree, bindElements } from './element';
 import { CanvasElement, Data } from '../const/common';
 import { initCanvas } from '../utils/canvas';
@@ -38,7 +38,7 @@ export const getChildProxy = (element: Element) => {
         }
 
         if (father.$.isCollectingChilds) {
-          father.$.childList.unshift(target);
+          addChildList(father, target);
         }
 
         return father.$.elPainterMap[name];

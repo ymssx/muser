@@ -48,11 +48,14 @@ export const updateElementTree = (element: Element, props?: Data) => {
       element.$.updateRenderFunctions?.clear();
     }
 
-    for (const index of renderList) {
+    for (let i = renderList.length - 1; i >= 0; i -= 1) {
+      const index = renderList[i];
       element.$.currentRenderFunctionIndex = index;
-      context.save();
-      const renderFunction = element.$.renderFunctions[index];
       element.$.useElementIndex = 0;
+      element.$.fatherRenderFunctionIndex = element.$.father?.$.currentRenderFunctionIndex || 0;
+
+      const renderFunction = element.$.renderFunctions[index];
+      context.save();
       renderFunction(element.context);
       context.restore();
     }

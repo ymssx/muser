@@ -1,15 +1,10 @@
 import Element from '../element';
-import { Data } from '../const/common';
 import { bindElements } from '../utils/element';
 import { ElementConfig } from '../const/element';
 import { getCurrentRenderElement } from '../store/global';
-import ChildProxy from '../render/child';
+import ChildProxy, { addChildList } from '../render/child';
 
-interface UseElementConfig extends ElementConfig {
-  key?: string;
-}
-
-export const useElement = (ElementClass: { new (config: ElementConfig): Element }, config: UseElementConfig) => {
+export const useElement = (ElementClass: { new (config: ElementConfig): Element }, config: ElementConfig) => {
   const currentElement = getCurrentRenderElement();
   if (!currentElement) {
     throw new Error('no Element is Rendering');
@@ -32,13 +27,12 @@ export const useElement = (ElementClass: { new (config: ElementConfig): Element 
   if (!currentElement.$.elPainterMap[elementName]) {
     const element = new ElementClass(config);
     currentElement.$.childMap[elementName] = element;
-    currentElement.$.fatherRenderFunctionIndex = currentFunctionIndex;
     bindElements(currentElement, element);
     const child = new ChildProxy(element);
     currentElement.$.elPainterMap[elementName] = child.updateProps.bind(child);
 
     if (currentElement.$.isCollectingChilds) {
-      currentElement.$.childList.unshift(element);
+      addChildList(currentElement, element);
     }
   }
 

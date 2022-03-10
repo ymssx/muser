@@ -1,12 +1,20 @@
-import Link from '../components/link';
 import Element from '../element';
+
+enum EventTriggerType {
+  tigger = 'trigger',
+  bubble = 'bubble',
+}
 
 interface ElementEvent {
   name: string;
   event: Event;
   x: number;
   y: number;
+  type?: EventTriggerType;
 }
+
+let MouseInSetOld = new Set<Element>();
+let MouseInSet = new Set<Element>();
 
 export const listenEvent = (element: Element) => {
   const canvas = element.canvas as HTMLCanvasElement;
@@ -27,12 +35,37 @@ export const listenEvent = (element: Element) => {
       x |= 0;
       y |= 0;
 
+      MouseInSetOld = MouseInSet;
+      MouseInSet = new Set();
+
       broadcastEvent(element, {
         name: eventName,
         event,
         x,
         y,
       });
+
+      for (const element of MouseInSetOld) {
+        if (!MouseInSet.has(element)) {
+          trigerEvent(element, {
+            name: 'out',
+            event,
+            x,
+            y,
+          });
+        }
+      }
+
+      for (const element of MouseInSet) {
+        if (!MouseInSetOld.has(element)) {
+          trigerEvent(element, {
+            name: 'in',
+            event,
+            x,
+            y,
+          });
+        }
+      }
     }) as any);
   };
 
@@ -59,30 +92,30 @@ export const trigerEvent = (element: Element, event: ElementEvent) => {
 };
 
 export const broadcastEvent = (element: Element, event: ElementEvent) => {
-  trigerEvent(element, event);
   const { x, y } = event;
-  element.$.childList?.forEach((child) => {
+  const childList = element.$.childList || [];
+
+  let hasChildTrigger = false;
+  for (const child of childList) {
     const { width, height } = child.config;
-    child.$.positionSnapshots?.forEach((snap) => {
-      const [[xs, ys], { x: styleX = 0, y: styleY = 0 }] = snap;
-      const currentX = (xs[xs.length - 1] || 0) + styleX;
-      const currentY = (ys[ys.length - 1] || 0) + styleY;
+    for (const snap of child.$.positionSnapshots || []) {
+      const [_, { x: styleX = 0, y: styleY = 0 }] = snap;
+      const currentX = styleX;
+      const currentY = styleY;
       if (x >= currentX && x <= currentX + width && y >= currentY && y <= currentY + height) {
+        hasChildTrigger = true;
+        MouseInSet.add(child);
         broadcastEvent(child, {
           ...event,
           x: x - currentX,
           y: y - currentY,
         });
-        child.$.mouseIn = true;
-      } else if (child.$.mouseIn) {
-        child.$.mouseIn = false;
-        trigerEvent(child, {
-          ...event,
-          name: 'mouseout',
-          x: x - currentX,
-          y: y - currentY,
-        });
       }
-    });
+    }
+  }
+
+  trigerEvent(element, {
+    ...event,
+    type: hasChildTrigger ? EventTriggerType.bubble : EventTriggerType.tigger,
   });
 };
