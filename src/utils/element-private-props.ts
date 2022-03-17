@@ -39,6 +39,7 @@ export interface ElementPrivateProps {
   eventMap: Map<string, Set<Function>>;
   useElementIndex: number;
   mouseIn: boolean;
+  context: CanvasRenderingContext2D | null;
 }
 
 export const initElementPrivateProps = (element: Element) => ({
@@ -74,4 +75,5 @@ export const initElementPrivateProps = (element: Element) => ({
   eventMap: new Map(),
   useElementIndex: 0,
   mouseIn: false,
+  context: null,
 });

@@ -3,18 +3,24 @@ import Element from '../element';
 import env, { ENV } from './env';
 
 export const createCanvas = (width: number, height: number): CanvasElement => {
+  const PR = window.devicePixelRatio;
   if (OffscreenCanvas) {
-    return new OffscreenCanvas(width, height);
+    return new OffscreenCanvas(width * PR, height * PR);
   }
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = width * PR;
+  canvas.height = height * PR;
   return canvas;
 };
 
 export const bindCanvas = (canvas: CanvasElement, width: number, height: number): CanvasElement => {
+  const PR = window.devicePixelRatio;
   canvas.width = width;
   canvas.height = height;
+  if (canvas instanceof HTMLCanvasElement) {
+    canvas.style.width = `${width / PR}px`;
+    canvas.style.height = `${height / PR}px`;
+  }
   return canvas;
 };
 

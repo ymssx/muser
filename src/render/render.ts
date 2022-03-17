@@ -41,7 +41,7 @@ export const updateElementTree = (element: Element, props?: Data) => {
       element.$.renderFunctions = Array.isArray(renderRes) ? renderRes : [renderRes];
       renderList = [];
       for (let index = 0; index < element.$.renderFunctions.length; index += 1) {
-        renderList.push(index);
+        renderList.unshift(index);
       }
     } else {
       renderList = Array.from(element.$.updateRenderFunctions);
@@ -56,7 +56,9 @@ export const updateElementTree = (element: Element, props?: Data) => {
 
       const renderFunction = element.$.renderFunctions[index];
       context.save();
-      renderFunction(element.context);
+      renderFunction(element.context, {
+        brush: element.brush,
+      });
       context.restore();
     }
 
@@ -73,9 +75,10 @@ export const renderTo = (element: Element, target: Element, style: PaintConfig =
   const elementContent = element.$.canvas;
   const targetContext = target.context;
   const { x = 0, y = 0 } = style;
+  const PR = element.PR;
 
   targetContext.save();
-  targetContext.translate(x, y);
+  targetContext.translate(x * PR, y * PR);
   if (elementContent) targetContext?.drawImage(elementContent, 0, 0); // 主绘制逻辑
   element.$.processSet.forEach((process) => process(target)); // 后处理
   targetContext.restore();

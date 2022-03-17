@@ -22,16 +22,12 @@ export const listenEvent = (element: Element) => {
   const addEvent = (eventName: keyof HTMLElementEventMap) => {
     canvas?.addEventListener(eventName, ((event: MouseEvent) => {
       let x, y;
-      if (event.pageX || event.pageY) {
-        x = event.pageX;
-        y = event.pageY;
-      } else {
-        x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-        y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-      }
+      const rect = canvas.getBoundingClientRect();
 
-      x -= canvas.offsetLeft;
-      y -= canvas.offsetTop;
+      x = event.clientX;
+      y = event.clientY;
+      x -= rect.left;
+      y -= rect.top;
       x |= 0;
       y |= 0;
 

@@ -6,6 +6,7 @@ import { getPropsProxy, setChildProxy, setCanvasProxy, setState, reactiveState }
 import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
 import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';
+import Brush from './canvas-api/index';
 
 export default abstract class Element {
   /**
@@ -20,6 +21,7 @@ export default abstract class Element {
   public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy } = {};
   public childMap: { [name: string]: Element } = {};
+  public brush: Brush;
 
   // canvas render method
   abstract render(element: Element): RenderFunction | RenderFunction[];
@@ -48,7 +50,10 @@ export default abstract class Element {
   }
 
   get context() {
-    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    if (!this.$.context) {
+      this.$.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    }
+    return this.$.context;
   }
 
   get PR() {
@@ -72,6 +77,7 @@ export default abstract class Element {
      */
     this.childs = setChildProxy(this);
     this.canvas = setCanvasProxy(this);
+    this.brush = new Brush(this);
 
     // set a Proxy to record the reading action of 'Props'
     this.props = getPropsProxy(this);
