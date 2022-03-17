@@ -15,11 +15,11 @@ export const createCanvas = (width: number, height: number): CanvasElement => {
 
 export const bindCanvas = (canvas: CanvasElement, width: number, height: number): CanvasElement => {
   const PR = window.devicePixelRatio;
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = width * PR;
+  canvas.height = height * PR;
   if (canvas instanceof HTMLCanvasElement) {
-    canvas.style.width = `${width / PR}px`;
-    canvas.style.height = `${height / PR}px`;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
   }
   return canvas;
 };
