@@ -13,7 +13,7 @@ export const haveOverlay = (a: Position, b: Position) => {
   return !(atRightOrTop(a, b) || atRightOrTop(b, a));
 };
 
-export const getPosition = (element: Element): Position => {
+export const getPosition = (element: Element<Object>): Position => {
   return {
     x: 0,
     y: 0,
@@ -28,7 +28,7 @@ export const getPosition = (element: Element): Position => {
  */
 
 // preorder traversal
-export const DLR = (tree: Element, handler: (element: Element) => boolean) => {
+export const DLR = (tree: Element<Object>, handler: (element: Element<Object>) => boolean) => {
   const hit = handler(tree);
   if (hit) {
     tree.$.childList?.forEach((child) => {
@@ -37,7 +37,7 @@ export const DLR = (tree: Element, handler: (element: Element) => boolean) => {
   }
 };
 
-export const checkOverlay = (element: Element) => {
+export const checkOverlay = (element: Element<Object>) => {
   if (!element.$.father) return;
   for (const brother of element.$.father.$.childList) {
     if (brother === element) break;

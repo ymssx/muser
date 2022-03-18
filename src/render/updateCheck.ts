@@ -2,7 +2,7 @@ import { StaleStatus } from '../const/render';
 import { Data } from '../const/common';
 import Element from '../element';
 
-export const updateProps = (element: Element, props: Data) => {
+export const updateProps = (element: Element<Object>, props: Object) => {
   if (hasChangeProps(element, props)) {
     element.$.stale = StaleStatus.Updater;
     element.$.props = {
@@ -12,7 +12,7 @@ export const updateProps = (element: Element, props: Data) => {
   }
 };
 
-export const isChildsStale = (element: Element) => {
+export const isChildsStale = (element: Element<Object>) => {
   for (const name in element.$.childList) {
     const el = element.$.childList[name];
     if (el.$.stale) {
@@ -22,15 +22,15 @@ export const isChildsStale = (element: Element) => {
   return false;
 };
 
-export const hasChangeProps = (element: Element, props: Data) => {
+export const hasChangeProps = function (element: Element<Object>, props: Object) {
   if (!element.$.hasInit) return true;
   if (!element.config.cache) return true;
 
-  const oldProps = element.$.props;
+  const oldProps = element.$.props as Data;
 
   let flag = false;
   for (const key in props) {
-    if (oldProps[key] !== props[key]) {
+    if (oldProps[key] !== (props as Data)[key]) {
       for (const [renderFunctionIndex, { propSet }] of element.$.dependence) {
         if (propSet?.has(key)) {
           flag = true;
@@ -42,10 +42,10 @@ export const hasChangeProps = (element: Element, props: Data) => {
   return flag;
 };
 
-export const hasChangeState = (element: Element, state: Data) => {
+export const hasChangeState = (element: Element<Object>, state: Data) => {
   if (!element.$.hasInit) return true;
 
-  const oldState = element.$.state;
+  const oldState = element.$.state as Data;
 
   let flag = false;
   for (const key in state) {

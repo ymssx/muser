@@ -27,9 +27,9 @@ interface RenderStyle {
 }
 
 export default class Brush {
-  element: Element;
+  element: Element<Object>;
 
-  constructor(element: Element) {
+  constructor(element: Element<Object>) {
     this.element = element;
   }
 

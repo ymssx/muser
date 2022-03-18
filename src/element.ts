@@ -8,23 +8,23 @@ import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';
 import Brush from './canvas-api/index';
 
-export default abstract class Element {
+export default abstract class Element<T extends Object> {
   /**
    * private status of component
    * do not use '$' to name your component methods
    */
-  $: ElementPrivateProps = initElementPrivateProps(this);
+  $: ElementPrivateProps<T> = initElementPrivateProps<T>(this);
 
-  public props: Data;
+  public props: T;
   public state: Data = {};
   public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy } = {};
-  public childMap: { [name: string]: Element } = {};
+  public childMap: { [name: string]: Element<Object> } = {};
   public brush: Brush;
 
   // canvas render method
-  abstract render(element: Element): RenderFunction | RenderFunction[];
+  abstract render(element: Element<T>): RenderFunction | RenderFunction[];
   public slot(name = 'default') {
     renderSlot(this, name);
   }
@@ -77,7 +77,7 @@ export default abstract class Element {
     this.brush = new Brush(this);
 
     // set a Proxy to record the reading action of 'Props'
-    this.props = getPropsProxy(this);
+    this.props = getPropsProxy(this) as T;
     reactiveState(this); // listen for state changes
 
     this.$.lifecycle.start();

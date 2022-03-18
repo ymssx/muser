@@ -1,13 +1,12 @@
 import Element from '../element';
-import Updater from './updater';
 import { PaintConfig, StaleStatus } from '../const/render';
 import { updateProps } from './updateCheck';
 import { Data, RenderFunction } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
-export const canDirectUpdate = (element: Element) => false;
+export const canDirectUpdate = (element: Element<Object>) => false;
 
-export const signUpdateChain = (leaf: Element, status: StaleStatus) => {
+export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus) => {
   if (leaf.$.stale !== StaleStatus.Stale) {
     leaf.$.stale = status;
   }
@@ -17,7 +16,7 @@ export const signUpdateChain = (leaf: Element, status: StaleStatus) => {
   }
 };
 
-export const updateElementTree = (element: Element, props?: Data) => {
+export const updateElementTree = (element: Element<Object>, props?: Data) => {
   /**
    * render function of a Element
    */
@@ -69,7 +68,7 @@ export const updateElementTree = (element: Element, props?: Data) => {
   }
 };
 
-export const renderTo = (element: Element, target: Element, style: PaintConfig = { x: 0, y: 0 }) => {
+export const renderTo = (element: Element<Object>, target: Element<Object>, style: PaintConfig = { x: 0, y: 0 }) => {
   const elementContent = element.$.canvas;
   const targetContext = target.context;
   const { x = 0, y = 0 } = style;
@@ -84,7 +83,7 @@ export const renderTo = (element: Element, target: Element, style: PaintConfig =
   element.$.processSet.clear();
 };
 
-export const renderToFather = (element: Element, style: PaintConfig = {}) => {
+export const renderToFather = (element: Element<Object>, style: PaintConfig = {}) => {
   if (!element.$.father) {
     throw new Error(`Element don't have a father element`);
   }
@@ -114,7 +113,7 @@ export const renderToFather = (element: Element, style: PaintConfig = {}) => {
   renderTo(element, element.$.father, style);
 };
 
-export const getTargetPosition = (target: Element, list: [number[], number[]]): [number, number] => {
+export const getTargetPosition = (target: Element<Object>, list: [number[], number[]]): [number, number] => {
   const floor = target.$.floor;
   let x = 0;
   let y = 0;
@@ -125,7 +124,7 @@ export const getTargetPosition = (target: Element, list: [number[], number[]]): 
   return [x, y];
 };
 
-export const getPaintTarget = (element: Element): Element => {
+export const getPaintTarget = (element: Element<Object>): Element<Object> => {
   const father = element.$.father;
   if (father) {
     if (father.$.updater.ticket) {
@@ -138,7 +137,7 @@ export const getPaintTarget = (element: Element): Element => {
   }
 };
 
-export const directUpdate = (element: Element) => {
+export const directUpdate = (element: Element<Object>) => {
   // is root element
   if (!element.$.father) {
     updateElementTree(element);
@@ -165,11 +164,11 @@ export const directUpdate = (element: Element) => {
   element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl));
 };
 
-export const renderToNewCanvas = (element: Element, newCanvas: OffscreenCanvas) => {
+export const renderToNewCanvas = (element: Element<Object>, newCanvas: OffscreenCanvas) => {
   element.canvas = newCanvas;
 };
 
-export const renderSlot = (element: Element, name: string = 'default') => {
+export const renderSlot = (element: Element<Object>, name: string = 'default') => {
   const process = element.$.slotsMap.get(name);
   if (process instanceof Function) {
     element.context.save();

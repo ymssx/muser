@@ -1,9 +1,9 @@
 import Element from './element';
 
 export default class LifeCycle {
-  element: Element;
+  element: Element<Object>;
 
-  constructor(element: Element) {
+  constructor(element: Element<Object>) {
     this.element = element;
   }
 

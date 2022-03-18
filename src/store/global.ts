@@ -1,8 +1,8 @@
 import Element from '../element';
 
-export const currentRenderElementStack: Element[] = [];
+export const currentRenderElementStack: Element<Object>[] = [];
 
-export const setCurrentRenderElement = (element: Element) => {
+export const setCurrentRenderElement = (element: Element<Object>) => {
   currentRenderElementStack.push(element);
 };
 

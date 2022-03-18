@@ -4,7 +4,7 @@ import { ElementConfig } from '../const/element';
 import { getCurrentRenderElement } from '../store/global';
 import ChildProxy, { addChildList } from '../render/child';
 
-export const useElement = (ElementClass: { new (config: ElementConfig): Element }, config: ElementConfig) => {
+export const useElement = (ElementClass: { new (config: ElementConfig): Element<Object> }, config: ElementConfig) => {
   const currentElement = getCurrentRenderElement();
   if (!currentElement) {
     throw new Error('no Element is Rendering');

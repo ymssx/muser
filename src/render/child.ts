@@ -6,8 +6,8 @@ import { renderToFather, updateElementTree } from '../render/render';
 import { updateProps } from '../render/updateCheck';
 
 export default class ChildProxy {
-  element: Element;
-  constructor(element: Element) {
+  element: Element<Object>;
+  constructor(element: Element<Object>) {
     this.element = element;
   }
 
@@ -21,12 +21,12 @@ export default class ChildProxy {
     return this;
   }
 
-  process(process: (element: Element) => void) {
+  process(process: (element: Element<Object>) => void) {
     this.element.$.processSet.add(process);
     return this;
   }
 
-  slot(process: (element: Element) => void, name: string = 'default') {
+  slot(process: (element: Element<Object>) => void, name: string = 'default') {
     this.element.$.slotsMap.set(name, process);
     return this;
   }
@@ -37,7 +37,7 @@ export default class ChildProxy {
   }
 }
 
-export const addChildList = (element: Element, child: Element) => {
+export const addChildList = (element: Element<Object>, child: Element<Object>) => {
   const currentChildList = element.$.childList;
   currentChildList.unshift(child);
   element.$.childList = Array.from(new Set(currentChildList));

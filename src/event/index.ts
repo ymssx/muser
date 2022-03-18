@@ -13,10 +13,10 @@ interface ElementEvent {
   type?: EventTriggerType;
 }
 
-let MouseInSetOld = new Set<Element>();
-let MouseInSet = new Set<Element>();
+let MouseInSetOld = new Set<Element<Object>>();
+let MouseInSet = new Set<Element<Object>>();
 
-export const listenEvent = (element: Element) => {
+export const listenEvent = (element: Element<Object>) => {
   const canvas = element.canvas as HTMLCanvasElement;
 
   const addEvent = (eventName: keyof HTMLElementEventMap) => {
@@ -71,7 +71,7 @@ export const listenEvent = (element: Element) => {
 
 export type EventCallBack = (event: ElementEvent) => void;
 
-export const addEventListener = (element: Element, eventName: string, callback: EventCallBack) => {
+export const addEventListener = (element: Element<Object>, eventName: string, callback: EventCallBack) => {
   const map = element.$.eventMap;
   if (!map.has(eventName)) {
     map.set(eventName, new Set());
@@ -80,14 +80,14 @@ export const addEventListener = (element: Element, eventName: string, callback: 
   set?.add(callback);
 };
 
-export const trigerEvent = (element: Element, event: ElementEvent) => {
+export const trigerEvent = (element: Element<Object>, event: ElementEvent) => {
   const map = element.$.eventMap;
   if (map.has(event?.name)) {
     map.get(event.name)?.forEach((callback) => callback(event));
   }
 };
 
-export const broadcastEvent = (element: Element, event: ElementEvent) => {
+export const broadcastEvent = (element: Element<Object>, event: ElementEvent) => {
   const { x, y } = event;
   const childList = element.$.childList || [];
 
