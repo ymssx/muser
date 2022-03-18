@@ -48,36 +48,39 @@ export const getChildProxy = (element: Element<Object>) => {
 };
 
 export const getPropsProxy = (element: Element<Object>) => {
-  return new Proxy(element.props, {
-    get(originProps, key: string) {
-      let res;
+  return new Proxy(
+    {},
+    {
+      get(originProps, key: string) {
+        let res;
 
-      const $props = element.$.props as Data;
-      if ($props.hasOwnProperty(key)) {
-        res = $props[key];
-      }
-
-      if (element.$.isAnsysingDependence && element.$.currentRenderFunctionIndex !== -1) {
-        const renderFunctionIndex = element.$.currentRenderFunctionIndex;
-        if (!element.$.dependence.has(renderFunctionIndex)) {
-          element.$.dependence.set(renderFunctionIndex, {
-            stateSet: new Set(),
-            propSet: new Set(),
-          });
+        const $props = element.$.props as Data;
+        if ($props.hasOwnProperty(key)) {
+          res = $props[key];
         }
-        const dependenceSet = element.$.dependence.get(renderFunctionIndex);
-        if (dependenceSet) {
-          dependenceSet.propSet.add(key);
-        }
-      }
 
-      return res;
-    },
-    set() {
-      // props is not allowed to modify
-      return false;
-    },
-  });
+        if (element.$.isAnsysingDependence && element.$.currentRenderFunctionIndex !== -1) {
+          const renderFunctionIndex = element.$.currentRenderFunctionIndex;
+          if (!element.$.dependence.has(renderFunctionIndex)) {
+            element.$.dependence.set(renderFunctionIndex, {
+              stateSet: new Set(),
+              propSet: new Set(),
+            });
+          }
+          const dependenceSet = element.$.dependence.get(renderFunctionIndex);
+          if (dependenceSet) {
+            dependenceSet.propSet.add(key);
+          }
+        }
+
+        return res;
+      },
+      set() {
+        // props is not allowed to modify
+        return false;
+      },
+    }
+  );
 };
 
 export const getStateProxy = (element: Element<Object>) => {
