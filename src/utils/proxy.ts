@@ -49,7 +49,7 @@ export const getChildProxy = (element: Element) => {
 
 export const getPropsProxy = (element: Element) => {
   return new Proxy(
-    {},
+    element.props,
     {
       get(originProps, key: string) {
         let res;

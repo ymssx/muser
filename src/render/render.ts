@@ -56,9 +56,7 @@ export const updateElementTree = (element: Element, props?: Data) => {
 
       const renderFunction = element.$.renderFunctions[index];
       context.save();
-      renderFunction(element.context, {
-        brush: element.brush,
-      });
+      renderFunction(element.brush);
       context.restore();
     }
 

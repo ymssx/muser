@@ -23,6 +23,7 @@ interface RenderStyle {
   strokeStyle?: CanvasRenderingContext2D['strokeStyle'];
   textAlign?: CanvasRenderingContext2D['textAlign'];
   textBaseline?: CanvasRenderingContext2D['textBaseline'];
+  fillStyle?: CanvasRenderingContext2D['fillStyle'];
 }
 
 export default class Brush {
@@ -32,8 +33,16 @@ export default class Brush {
     this.element = element;
   }
 
-  get ctx() {
+  get context() {
     return this.element.context;
+  }
+
+  get ctx() {
+    return this.context;
+  }
+
+  get canvas() {
+    return this.element.canvas;
   }
 
   getSizeOfWidth(x: P) {
@@ -88,6 +97,10 @@ export default class Brush {
     this.setStyle(style);
     renderFunction(ctx);
     ctx.restore();
+  }
+
+  clear() {
+    this.element.canvas.width = this.element.canvas.width;
   }
 
   rect([x, y, w, h]: Position, style: RenderStyle) {

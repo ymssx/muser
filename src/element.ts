@@ -50,10 +50,7 @@ export default abstract class Element {
   }
 
   get context() {
-    if (!this.$.context) {
-      this.$.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-    }
-    return this.$.context;
+    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
   }
 
   get PR() {
