@@ -3,6 +3,7 @@
 <a href="https://www.npmjs.com/package/muser">
   <img src="https://img.shields.io/npm/v/muser"/>
 </a>
+![](https://visitor-badge.glitch.me/badge?page_id=ymssx.muser)
 
 [中文](https://github.com/ymssx/muse/blob/master/README_CN.md)
 
