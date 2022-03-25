@@ -1,4 +1,4 @@
-import Brush from '../canvas-api/index';
+import { Brush } from '../canvas-api/index';
 
 export type CanvasElement = OffscreenCanvas | HTMLCanvasElement;
 

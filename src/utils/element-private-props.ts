@@ -17,7 +17,7 @@ export interface ElementPrivateProps<T> {
   isCollectingChilds: boolean;
   childList: Element<Object>[];
   childMap: { [name: string]: Element<Object> };
-  childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy };
+  childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> };
   stale: StaleStatus; // if component need update
   hasInit: boolean; // if the component rendered for the first time
   dependence: Map<number, { stateSet: Set<string>; propSet: Set<string> }>;

@@ -5,9 +5,9 @@ import Element from '../element';
 import { renderToFather, updateElementTree } from '../render/render';
 import { updateProps } from '../render/updateCheck';
 
-export default class ChildProxy {
-  element: Element<Object>;
-  constructor(element: Element<Object>) {
+export default class ChildProxy<T> {
+  element: Element<T>;
+  constructor(element: Element<T>) {
     this.element = element;
   }
 
@@ -15,7 +15,7 @@ export default class ChildProxy {
     return this;
   }
 
-  updateProps(props: Data = {}, config?: ElementConfigExtend) {
+  updateProps(props: T, config?: ElementConfigExtend) {
     updateProps(this.element, props);
     updateElementTree(this.element);
     return this;

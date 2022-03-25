@@ -4,7 +4,10 @@ import { ElementConfig } from '../const/element';
 import { getCurrentRenderElement } from '../store/global';
 import ChildProxy, { addChildList } from '../render/child';
 
-export const useElement = (ElementClass: { new (config: ElementConfig): Element<Object> }, config: ElementConfig) => {
+export const useElement = function <T extends Object>(
+  ElementClass: { new (config: ElementConfig): Element<T> },
+  config: ElementConfig
+) {
   const currentElement = getCurrentRenderElement();
   if (!currentElement) {
     throw new Error('no Element is Rendering');
@@ -37,5 +40,5 @@ export const useElement = (ElementClass: { new (config: ElementConfig): Element<
   }
 
   currentElement.$.useElementIndex += 1;
-  return currentElement.$.elPainterMap[elementName];
+  return currentElement.$.elPainterMap[elementName] as (props: T) => ChildProxy<T>; // TODO
 };
