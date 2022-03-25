@@ -95,7 +95,7 @@ export const broadcastEvent = (element: Element<Object>, event: ElementEvent) =>
   for (const child of childList) {
     const { width, height } = child.config;
     for (const snap of child.$.positionSnapshots || []) {
-      const [_, { x: styleX = 0, y: styleY = 0 }] = snap;
+      const { x: styleX = 0, y: styleY = 0 } = snap;
       const currentX = styleX;
       const currentY = styleY;
       if (x >= currentX && x <= currentX + width && y >= currentY && y <= currentY + height) {

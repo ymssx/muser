@@ -28,9 +28,8 @@ export interface ElementPrivateProps<T> {
   isAnsysingDependence: boolean;
   lifecycle: LifeCycle;
   stateReactive: boolean;
-  positionSnapshots: [[number[], number[]], PaintConfig][];
+  positionSnapshots: PaintConfig[];
   propsSnapshots: Object[];
-  snapFlag: boolean;
   currentPosition: [number[], number[]];
   floor: number;
   canvasName: string | null;
@@ -66,7 +65,6 @@ export const initElementPrivateProps = function <T extends Object>(element: Elem
     stateReactive: false,
     positionSnapshots: [],
     propsSnapshots: [],
-    snapFlag: false,
     currentPosition: [[], []] as [number[], number[]],
     floor: 0,
     canvasName: null,

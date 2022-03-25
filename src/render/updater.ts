@@ -1,5 +1,5 @@
 import Element from '../element';
-import { signUpdateChain, directUpdate, canDirectUpdate, updateElementTree } from './render';
+import { signUpdateChain, directUpdate, canDirectUpdate, updateElementTree, collectDirectRender } from './render';
 import { StaleStatus } from '../const/render';
 
 export default class Updater {
@@ -7,6 +7,7 @@ export default class Updater {
   private updatePool: Set<Element<Object>> = new Set();
   public coverElements: Set<Element<Object>> = new Set();
   public ticket: number | null = null;
+  public needDirectRender = false;
 
   constructor(element: Element<Object>) {
     this.element = element;
@@ -22,9 +23,8 @@ export default class Updater {
   }
 
   beginUpdate() {
-    updateElementTree(this.element);
-    directUpdate(this.element);
     this.ticket = null;
+    collectDirectRender(this.element);
   }
 
   registUpdate() {
@@ -33,12 +33,11 @@ export default class Updater {
   }
 
   update() {
-    signUpdateChain(this.element, StaleStatus.Updater);
-
     let updateRoot = this.element;
     while (!canDirectUpdate(updateRoot) && updateRoot.$.father) {
       updateRoot = updateRoot.$.father;
     }
-    updateRoot.$.updater.registUpdate();
+    updateRoot.$.updater.needDirectRender = true;
+    this.element.$.root?.$.updater.registUpdate();
   }
 }

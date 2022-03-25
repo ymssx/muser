@@ -4,10 +4,10 @@ import { updateProps } from './updateCheck';
 import { Data, RenderFunction } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
-export const canDirectUpdate = (element: Element<Object>) => false;
+export const canDirectUpdate = (element: Element<Object>) => true;
 
 export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus) => {
-  if (leaf.$.stale !== StaleStatus.Stale) {
+  if (leaf.$.stale !== StaleStatus.Updater) {
     leaf.$.stale = status;
   }
   if (leaf.$.father) {
@@ -55,7 +55,9 @@ export const updateElementTree = (element: Element<Object>, props?: Data) => {
 
       const renderFunction = element.$.renderFunctions[index];
       context.save();
-      renderFunction(element.brush);
+      if (renderFunction) {
+        renderFunction(element.brush);
+      }
       context.restore();
     }
 
@@ -92,76 +94,58 @@ export const renderToFather = (element: Element<Object>, style: PaintConfig = {}
    * 记录每次被渲染时，当前组件链的相对位置、props
    * 为了在直接渲染时快速找到上次的位置与props
    */
-  const { x = 0, y = 0 } = style;
-  const [xs, ys] = element.$.father.$.currentPosition;
-  element.$.currentPosition = [
-    [...xs, x],
-    [...ys, y],
-  ];
-  // 仅在一个主任务中收集，下次任务开始前清空
-  if (!element.$.snapFlag) {
-    element.$.snapFlag = true;
-    element.$.positionSnapshots = [];
-    element.$.propsSnapshots = [];
-    setTimeout(() => {
-      element.$.snapFlag = false;
-    }, 0);
-  }
-  element.$.positionSnapshots.push([[xs, ys], style]);
+  element.$.positionSnapshots.push(style);
   element.$.propsSnapshots.push(element.$.props);
 
   renderTo(element, element.$.father, style);
 };
 
-export const getTargetPosition = (target: Element<Object>, list: [number[], number[]]): [number, number] => {
-  const floor = target.$.floor;
-  let x = 0;
-  let y = 0;
-  for (let index = 0; index < floor; index += 1) {
-    x += list[0][index];
-    y += list[1][index];
+export const getTargetPosition = (target: Element<Object>): { x: number; y: number }[] => {
+  const father = target?.$.father;
+  if (!target || !father) {
+    return [{ x: 0, y: 0 }];
   }
-  return [x, y];
-};
 
-export const getPaintTarget = (element: Element<Object>): Element<Object> => {
-  const father = element.$.father;
-  if (father) {
-    if (father.$.updater.ticket) {
-      return father;
-    } else {
-      return getPaintTarget(father);
+  const res = [];
+  const styles = target.$.positionSnapshots;
+  const fatherPositions = getTargetPosition(father);
+  for (const position of fatherPositions) {
+    for (const { x = 0, y = 0 } of styles) {
+      res.push({
+        x: position.x + x,
+        y: position.y + y,
+      });
     }
-  } else {
-    return element;
   }
+  return res;
 };
 
-export const directUpdate = (element: Element<Object>) => {
+export const directUpdate = (element: Element<Object>, target: Element<Object>) => {
   // is root element
   if (!element.$.father) {
     updateElementTree(element);
     return;
   }
 
-  const target = getPaintTarget(element);
   for (let index = 0; index < element.$.positionSnapshots.length; index += 1) {
     const props = element.$.propsSnapshots[index];
     updateProps(element, props);
     updateElementTree(element);
 
-    const [list, style] = element.$.positionSnapshots[index];
+    const style = element.$.positionSnapshots[index];
     const { x = 0, y = 0 } = style;
-    const [tx, ty] = getTargetPosition(target, list);
-    const currentStyle = {
-      ...style,
-      x: tx + x,
-      y: ty + y,
-    };
-    renderTo(element, target, currentStyle);
+    const positions = getTargetPosition(element.$.father);
+    positions.forEach((item) => {
+      const currentStyle = {
+        ...style,
+        x: x + item.x,
+        y: y + item.y,
+      };
+      renderTo(element, target, currentStyle);
+    });
   }
 
-  element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl));
+  element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl, target));
 };
 
 export const renderToNewCanvas = (element: Element<Object>, newCanvas: OffscreenCanvas) => {
@@ -174,5 +158,49 @@ export const renderSlot = (element: Element<Object>, name: string = 'default') =
     element.context.save();
     process(element);
     element.context.restore();
+  }
+};
+
+const iteratorElement = (element: Element<Object>) => {
+  let list: Array<Element<Object>> = [element];
+  return {
+    [Symbol.iterator]() {
+      return {
+        next() {
+          if (list.length === 0) {
+            return { done: true };
+          }
+
+          const current = list.pop() as Element<Object>;
+          if (current.$.childList) {
+            list = list.concat(current.$.childList);
+          }
+          return {
+            value: current,
+            done: false,
+          };
+        },
+      };
+    },
+  };
+};
+
+export const collectDirectRender = (root: Element<Object> | null) => {
+  if (!root) {
+    return;
+  }
+
+  const elementList = iteratorElement(root);
+  const directList = [];
+  for (const element of elementList) {
+    if (element?.$.updater.needDirectRender) {
+      directUpdate(element, root);
+      element.$.updater.needDirectRender = false;
+      directList.push(element);
+    }
+  }
+
+  for (const element of directList) {
+    signUpdateChain(element, StaleStatus.Stale);
   }
 };
