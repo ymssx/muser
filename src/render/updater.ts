@@ -38,6 +38,7 @@ export default class Updater {
       updateRoot = updateRoot.$.father;
     }
     updateRoot.$.updater.needDirectRender = true;
+    signUpdateChain(this.element, StaleStatus.Updater, updateRoot);
     this.element.$.root?.$.updater.registUpdate();
   }
 }

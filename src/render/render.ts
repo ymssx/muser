@@ -6,13 +6,17 @@ import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/glob
 
 export const canDirectUpdate = (element: Element<Object>) => true;
 
-export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus) => {
+export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus, end?: Element<Object>) => {
   if (leaf.$.stale !== StaleStatus.Updater) {
     leaf.$.stale = status;
   }
+  if (leaf === end) {
+    return;
+  }
   if (leaf.$.father) {
     leaf.$.father.$.updateRenderFunctions.add(leaf.$.fatherRenderFunctionIndex);
-    signUpdateChain(leaf.$.father, StaleStatus.Stale);
+
+    signUpdateChain(leaf.$.father, StaleStatus.Stale, end);
   }
 };
 
@@ -94,6 +98,7 @@ export const renderToFather = (element: Element<Object>, style: PaintConfig = {}
    * 记录每次被渲染时，当前组件链的相对位置、props
    * 为了在直接渲染时快速找到上次的位置与props
    */
+  // TODO: 需要找到时机清空
   element.$.positionSnapshots.push(style);
   element.$.propsSnapshots.push(element.$.props);
 
