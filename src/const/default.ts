@@ -7,6 +7,7 @@ export namespace Default {
       height: 0,
       cache: true,
       alpha: false,
+      direct: false,
     };
   }
 }

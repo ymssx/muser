@@ -8,6 +8,7 @@ export interface ElementConfig {
   canvas?: CanvasElement | string;
   alpha: boolean; // is canvas transparent -- default: false;
   backgroundColor?: string;
+  direct: boolean;
 }
 
 export type ElementConfigExtend = Partial<ElementConfig>;

@@ -5,8 +5,8 @@ import { Data } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
 export const canDirectUpdate = (element: Element<Object>) => {
-  const { alpha, backgroundColor } = element.config;
-  return !alpha || backgroundColor;
+  const { direct, alpha, backgroundColor } = element.config;
+  return direct || !alpha || backgroundColor;
 };
 
 export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus, end?: Element<Object>) => {
