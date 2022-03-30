@@ -74,6 +74,8 @@ export const updateElementTree = (element: Element, props?: Data) => {
     element.$.hasInit = true;
     element.$.currentRenderFunctionIndex = -1;
     exitCurrentRenderElement();
+
+    element.$.lifecycle.afterUpdate();
   }
 };
 

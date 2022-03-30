@@ -2,17 +2,8 @@ import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { renderSlot } from './render/render';
-import {
-  getPropsProxy,
-  setChildProxy,
-  setCanvasProxy,
-} from './utils/proxy';
-import {
-  setState,
-  smoothState,
-  infiniteState,
-  reactiveState,
-} from './render/state';
+import { getPropsProxy, setChildProxy, setCanvasProxy } from './utils/proxy';
+import { setState, smoothState, infiniteState, reactiveState } from './render/state';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
 import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';

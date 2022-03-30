@@ -167,6 +167,46 @@ export default function getBrush(element: Element) {
         return ctx.measureText(text).width / PR;
       });
     },
+
+    circle([x, y, r]: Position, style: RenderStyle) {
+      return renderWithStyle(style, (ctx) => {
+        ctx.beginPath();
+        ctx.arc(getSizeOfWidth(x), getSizeOfHeight(y), getSizeOfWidth(r), 0, 2 * Math.PI);
+        if (style.strokeStyle) {
+          ctx.stroke();
+        }
+        if (style.fillStyle) {
+          ctx.fill();
+        }
+      });
+    },
+
+    circleRect([_x, _y, _w, _h, _r]: Position, style: RenderStyle) {
+      return renderWithStyle(style, (ctx) => {
+        const [x, y, w, h, r] = [
+          getSizeOfWidth(_x),
+          getSizeOfHeight(_y),
+          getSizeOfWidth(_w),
+          getSizeOfHeight(_h),
+          getSizeOfHeight(_r),
+        ];
+        ctx.beginPath();
+        ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5);
+        ctx.lineTo(x + r, y + h);
+        ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI);
+        ctx.lineTo(x, y + r);
+        ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
+
+        if (style.strokeStyle) {
+          ctx.stroke();
+        }
+        if (style.fillStyle) {
+          ctx.fill();
+        }
+      });
+    },
   };
 }
 
