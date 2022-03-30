@@ -1,12 +1,12 @@
 import Element from '../element';
 import { bindElements } from '../utils/element';
-import { ElementConfig } from '../const/element';
+import { OuterConfig } from '../const/element';
 import { getCurrentRenderElement } from '../store/global';
 import ChildProxy, { addChildList } from '../render/child';
 
 export const useElement = function <T extends Object>(
-  ElementClass: { new (config: ElementConfig): Element<T> },
-  config: ElementConfig
+  ElementClass: { new (config: OuterConfig): Element<T> },
+  config: OuterConfig
 ) {
   const currentElement = getCurrentRenderElement();
   if (!currentElement) {

@@ -17,11 +17,11 @@ export default abstract class Element<T extends Object> {
 
   public props: T;
   public state: Data = {};
-  public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> } = {};
   public childMap: { [name: string]: Element<Object> } = {};
   public brush: Brush;
+  public config: ElementConfig;
 
   // canvas render method
   abstract render(element: Element<T>): RenderFunction | RenderFunction[];
@@ -31,7 +31,8 @@ export default abstract class Element<T extends Object> {
 
   // lifecycle methods
   created?(): void;
-  painted?(): void;
+  beforeRender?(): void;
+  rendered?(): void;
   updated?(): void;
   destroyed?(): void;
 
@@ -50,7 +51,8 @@ export default abstract class Element<T extends Object> {
   }
 
   get context() {
-    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    const { alpha } = this.config;
+    return this.canvas.getContext('2d', { alpha }) as CanvasRenderingContext2D;
   }
 
   get PR() {
@@ -59,7 +61,6 @@ export default abstract class Element<T extends Object> {
 
   constructor(config: ElementConfigExtend) {
     Object.defineProperty(this, '$', { writable: false }); // lock private property '$'
-
     this.config = {
       ...Default.Element.config,
       ...config,

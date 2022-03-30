@@ -25,21 +25,35 @@ export const bindCanvas = (canvas: CanvasElement, width: number, height: number)
 };
 
 export const initCanvas = (element: Element<Object>): CanvasElement | null => {
-  if (!element.config?.cache) {
+  const { cache, alpha, backgroundColor } = element.config || {};
+  if (!cache) {
     return null;
   }
 
+  let canvas: CanvasElement;
   if (typeof element.config.canvas === 'string') {
     if (env === ENV.worker) {
       // TODO
       element.$.canvasName = element.config.canvas;
-      return createCanvas(element.config.width, element.config.height);
+      canvas = createCanvas(element.config.width, element.config.height);
     } else {
       throw new Error('Only in worker mode, type of "canvas" can be string');
     }
+  } else {
+    canvas = element.config.canvas
+      ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
+      : createCanvas(element.config.width, element.config.height);
   }
 
-  return element.config.canvas
-    ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
-    : createCanvas(element.config.width, element.config.height);
+  if (!alpha && backgroundColor) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.save();
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+  }
+
+  return canvas;
 };

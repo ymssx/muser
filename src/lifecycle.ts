@@ -12,4 +12,10 @@ export default class LifeCycle {
       this.element.created();
     }
   }
+
+  beforeRender() {
+    if (this.element.beforeRender instanceof Function) {
+      this.element.beforeRender();
+    }
+  }
 }

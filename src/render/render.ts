@@ -1,10 +1,13 @@
 import Element from '../element';
 import { PaintConfig, StaleStatus } from '../const/render';
 import { updateProps } from './updateCheck';
-import { Data, RenderFunction } from '../const/common';
+import { Data } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
-export const canDirectUpdate = (element: Element<Object>) => true;
+export const canDirectUpdate = (element: Element<Object>) => {
+  const { alpha, backgroundColor } = element.config;
+  return !alpha || backgroundColor;
+};
 
 export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus, end?: Element<Object>) => {
   if (leaf.$.stale !== StaleStatus.Updater) {
@@ -98,7 +101,15 @@ export const renderToFather = (element: Element<Object>, style: PaintConfig = {}
    * 记录每次被渲染时，当前组件链的相对位置、props
    * 为了在直接渲染时快速找到上次的位置与props
    */
-  // TODO: 需要找到时机清空
+  if (!element.$.snapFlag) {
+    element.$.snapFlag = true;
+    element.$.positionSnapshots = [];
+    element.$.propsSnapshots = [];
+    // TODO: need optimize
+    setTimeout(() => {
+      element.$.snapFlag = false;
+    }, 0);
+  }
   element.$.positionSnapshots.push(style);
   element.$.propsSnapshots.push(element.$.props);
 
@@ -132,12 +143,14 @@ export const directUpdate = (element: Element<Object>, target: Element<Object>) 
     return;
   }
 
-  for (let index = 0; index < element.$.positionSnapshots.length; index += 1) {
-    const props = element.$.propsSnapshots[index];
+  const propsSnapshots = element.$.propsSnapshots;
+  const positionSnapshots = element.$.positionSnapshots;
+  for (let index = 0; index < positionSnapshots.length; index += 1) {
+    const props = propsSnapshots[index];
     updateProps(element, props);
     updateElementTree(element);
 
-    const style = element.$.positionSnapshots[index];
+    const style = positionSnapshots[index];
     const { x = 0, y = 0 } = style;
     const positions = getTargetPosition(element.$.father);
     positions.forEach((item) => {
