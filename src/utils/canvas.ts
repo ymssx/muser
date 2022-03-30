@@ -24,7 +24,7 @@ export const bindCanvas = (canvas: CanvasElement, width: number, height: number)
   return canvas;
 };
 
-export const initCanvas = (element: Element<Object>): CanvasElement | null => {
+export const initCanvas = (element: Element): CanvasElement | null => {
   const { cache, alpha, backgroundColor } = element.config || {};
   if (!cache) {
     return null;

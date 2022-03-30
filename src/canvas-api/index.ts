@@ -26,7 +26,7 @@ interface RenderStyle {
   fillStyle?: CanvasRenderingContext2D['fillStyle'];
 }
 
-export default function getBrush(element: Element<Object>) {
+export default function getBrush(element: Element) {
   const PR = window.devicePixelRatio;
 
   const setStyle = function (style: RenderStyle = {}) {

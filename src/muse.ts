@@ -10,9 +10,9 @@ if (env === ENV.worker) {
 }
 
 export default class Muse {
-  childs: Element<Object>[] = [];
+  childs: Element[] = [];
 
-  constructor(childs: Element<Object>[]) {
+  constructor(childs: Element[]) {
     this.childs = childs;
 
     this.childs.forEach((element) => {

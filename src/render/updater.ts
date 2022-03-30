@@ -3,22 +3,22 @@ import { signUpdateChain, directUpdate, canDirectUpdate, updateElementTree, coll
 import { StaleStatus } from '../const/render';
 
 export default class Updater {
-  private element: Element<Object>;
-  private updatePool: Set<Element<Object>> = new Set();
-  public coverElements: Set<Element<Object>> = new Set();
+  private element: Element;
+  private updatePool: Set<Element> = new Set();
+  public coverElements: Set<Element> = new Set();
   public ticket: number | null = null;
   public needDirectRender = false;
 
-  constructor(element: Element<Object>) {
+  constructor(element: Element) {
     this.element = element;
   }
 
-  add(element: Element<Object>) {
+  add(element: Element) {
     this.updatePool.add(element);
     this.registUpdate();
   }
 
-  addCoverElement(element: Element<Object>) {
+  addCoverElement(element: Element) {
     this.coverElements.add(element);
   }
 

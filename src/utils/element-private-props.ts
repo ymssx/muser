@@ -8,15 +8,15 @@ import LifeCycle from '../lifecycle';
 
 export interface ElementPrivateProps<T> {
   canvas: CanvasElement | null;
-  father: Element<Object> | null;
-  root: Element<Object> | null;
+  father: Element | null;
+  root: Element | null;
   updater: Updater;
   props: T;
   state: Data;
   elPainterMap: { [name: string]: Function };
   isCollectingChilds: boolean;
-  childList: Element<Object>[];
-  childMap: { [name: string]: Element<Object> };
+  childList: Element[];
+  childMap: { [name: string]: Element };
   childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> };
   stale: StaleStatus; // if component need update
   hasInit: boolean; // if the component rendered for the first time
@@ -34,8 +34,8 @@ export interface ElementPrivateProps<T> {
   currentPosition: [number[], number[]];
   floor: number;
   canvasName: string | null;
-  processSet: Set<(element: Element<Object>) => void>;
-  slotsMap: Map<string, (element: Element<Object>) => void>;
+  processSet: Set<(element: Element) => void>;
+  slotsMap: Map<string, (element: Element) => void>;
   eventMap: Map<string, Set<Function>>;
   useElementIndex: number;
   mouseIn: boolean;
@@ -70,8 +70,8 @@ export const initElementPrivateProps = function <T extends Object>(element: Elem
     currentPosition: [[], []] as [number[], number[]],
     floor: 0,
     canvasName: null,
-    processSet: new Set<(element: Element<Object>) => void>(),
-    slotsMap: new Map<string, (element: Element<Object>) => void>(),
+    processSet: new Set<(element: Element) => void>(),
+    slotsMap: new Map<string, (element: Element) => void>(),
     eventMap: new Map(),
     useElementIndex: 0,
     mouseIn: false,

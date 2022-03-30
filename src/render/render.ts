@@ -4,12 +4,12 @@ import { updateProps } from './updateCheck';
 import { Data } from '../const/common';
 import { setCurrentRenderElement, exitCurrentRenderElement } from '../store/global';
 
-export const canDirectUpdate = (element: Element<Object>) => {
+export const canDirectUpdate = (element: Element) => {
   const { direct, alpha, backgroundColor } = element.config;
   return direct || !alpha || backgroundColor;
 };
 
-export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus, end?: Element<Object>) => {
+export const signUpdateChain = (leaf: Element, status: StaleStatus, end?: Element) => {
   if (leaf.$.stale !== StaleStatus.Updater) {
     leaf.$.stale = status;
   }
@@ -23,7 +23,7 @@ export const signUpdateChain = (leaf: Element<Object>, status: StaleStatus, end?
   }
 };
 
-export const updateElementTree = (element: Element<Object>, props?: Data) => {
+export const updateElementTree = (element: Element, props?: Data) => {
   /**
    * render function of a Element
    */
@@ -77,7 +77,7 @@ export const updateElementTree = (element: Element<Object>, props?: Data) => {
   }
 };
 
-export const renderTo = (element: Element<Object>, target: Element<Object>, style: PaintConfig = { x: 0, y: 0 }) => {
+export const renderTo = (element: Element, target: Element, style: PaintConfig = { x: 0, y: 0 }) => {
   const elementContent = element.$.canvas;
   const targetContext = target.context;
   const { x = 0, y = 0 } = style;
@@ -92,7 +92,7 @@ export const renderTo = (element: Element<Object>, target: Element<Object>, styl
   element.$.processSet.clear();
 };
 
-export const renderToFather = (element: Element<Object>, style: PaintConfig = {}) => {
+export const renderToFather = (element: Element, style: PaintConfig = {}) => {
   if (!element.$.father) {
     throw new Error(`Element don't have a father element`);
   }
@@ -116,7 +116,7 @@ export const renderToFather = (element: Element<Object>, style: PaintConfig = {}
   renderTo(element, element.$.father, style);
 };
 
-export const getTargetPosition = (target: Element<Object>): { x: number; y: number }[] => {
+export const getTargetPosition = (target: Element): { x: number; y: number }[] => {
   const father = target?.$.father;
   if (!target || !father) {
     return [{ x: 0, y: 0 }];
@@ -136,7 +136,7 @@ export const getTargetPosition = (target: Element<Object>): { x: number; y: numb
   return res;
 };
 
-export const directUpdate = (element: Element<Object>, target: Element<Object>) => {
+export const directUpdate = (element: Element, target: Element) => {
   // is root element
   if (!element.$.father) {
     updateElementTree(element);
@@ -166,11 +166,11 @@ export const directUpdate = (element: Element<Object>, target: Element<Object>) 
   element.$.updater.coverElements.forEach((coverEl) => directUpdate(coverEl, target));
 };
 
-export const renderToNewCanvas = (element: Element<Object>, newCanvas: OffscreenCanvas) => {
+export const renderToNewCanvas = (element: Element, newCanvas: OffscreenCanvas) => {
   element.canvas = newCanvas;
 };
 
-export const renderSlot = (element: Element<Object>, name: string = 'default') => {
+export const renderSlot = (element: Element, name: string = 'default') => {
   const process = element.$.slotsMap.get(name);
   if (process instanceof Function) {
     element.context.save();
@@ -179,8 +179,8 @@ export const renderSlot = (element: Element<Object>, name: string = 'default') =
   }
 };
 
-const iteratorElement = (element: Element<Object>) => {
-  let list: Array<Element<Object>> = [element];
+const iteratorElement = (element: Element) => {
+  let list: Array<Element> = [element];
   return {
     [Symbol.iterator]() {
       return {
@@ -189,7 +189,7 @@ const iteratorElement = (element: Element<Object>) => {
             return { done: true };
           }
 
-          const current = list.pop() as Element<Object>;
+          const current = list.pop() as Element;
           if (current.$.childList) {
             list = list.concat(current.$.childList);
           }
@@ -203,7 +203,7 @@ const iteratorElement = (element: Element<Object>) => {
   };
 };
 
-export const collectDirectRender = (root: Element<Object> | null) => {
+export const collectDirectRender = (root: Element | null) => {
   if (!root) {
     return;
   }

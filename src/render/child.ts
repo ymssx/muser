@@ -21,12 +21,12 @@ export default class ChildProxy<T> {
     return this;
   }
 
-  process(process: (element: Element<Object>) => void) {
+  process(process: (element: Element) => void) {
     this.element.$.processSet.add(process);
     return this;
   }
 
-  slot(process: (element: Element<Object>) => void, name: string = 'default') {
+  slot(process: (element: Element) => void, name: string = 'default') {
     this.element.$.slotsMap.set(name, process);
     return this;
   }
@@ -37,7 +37,7 @@ export default class ChildProxy<T> {
   }
 }
 
-export const addChildList = (element: Element<Object>, child: Element<Object>) => {
+export const addChildList = (element: Element, child: Element) => {
   const currentChildList = element.$.childList;
   currentChildList.unshift(child);
   element.$.childList = Array.from(new Set(currentChildList));
