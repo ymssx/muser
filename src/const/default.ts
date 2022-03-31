@@ -5,7 +5,7 @@ export namespace Default {
     export const config: ElementConfig = {
       width: 0,
       height: 0,
-      cache: true,
+      cache: false,
       alpha: false,
       direct: false,
     };

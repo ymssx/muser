@@ -2,7 +2,8 @@ import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
 import { renderSlot } from './render/render';
-import { getPropsProxy, setChildProxy, setCanvasProxy } from './utils/proxy';
+import { getPropsProxy, setChildProxy } from './utils/proxy';
+import { initCanvas } from './utils/canvas';
 import { setState, smoothState, infiniteState, reactiveState } from './render/state';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
 import ChildProxy from './render/child';
@@ -18,7 +19,6 @@ export default abstract class Element<T extends Object = Object> {
 
   public props: T;
   public state: Data = {};
-  public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> } = {};
   public childMap: { [name: string]: Element } = {};
   public brush: Brush;
@@ -65,6 +65,21 @@ export default abstract class Element<T extends Object = Object> {
     }
   }
 
+  set canvas(canvas: CanvasElement) {
+    this.$.canvas = canvas;
+  }
+
+  get canvas(): CanvasElement {
+    if (!this.config.cache && !this.$.canvas) {
+      if (this.$.father) {
+        return this.$.father.canvas;
+      } else {
+        throw new Error('Root element must have a canvas instance');
+      }
+    }
+    return this.$.canvas as CanvasElement;
+  }
+
   get context() {
     const { alpha } = this.config;
     return this.canvas.getContext('2d', { alpha }) as CanvasRenderingContext2D;
@@ -82,14 +97,14 @@ export default abstract class Element<T extends Object = Object> {
     };
 
     /**
-     * setChildProxy:
-     *   - bind a Proxy to visit component's childs
      * setCanvasProxy:
      *   - bind a Proxy to return whether itself Canvas or father's Canvas
      *   - which depends on the value of 'config.cache'
+     * setChildProxy:
+     *   - bind a Proxy to visit component's childs
      */
+    initCanvas(this);
     this.childs = setChildProxy(this);
-    this.canvas = setCanvasProxy(this);
     this.brush = getBrush(this);
 
     // set a Proxy to record the reading action of 'Props'

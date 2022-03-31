@@ -39,6 +39,7 @@ export interface ElementPrivateProps<T> {
   eventMap: Map<string, Set<Function>>;
   useElementIndex: number;
   mouseIn: boolean;
+  renderTarget: Element | null;
 }
 
 export const initElementPrivateProps = function <T extends Object>(element: Element<T>) {
@@ -75,5 +76,6 @@ export const initElementPrivateProps = function <T extends Object>(element: Elem
     eventMap: new Map(),
     useElementIndex: 0,
     mouseIn: false,
+    renderTarget: null,
   };
 };

@@ -24,13 +24,10 @@ export const bindCanvas = (canvas: CanvasElement, width: number, height: number)
   return canvas;
 };
 
-export const initCanvas = (element: Element): CanvasElement | null => {
-  const { cache, alpha, backgroundColor } = element.config || {};
-  if (!cache) {
-    return null;
-  }
+export const initCanvas = (element: Element) => {
+  const { cache } = element.config || {};
 
-  let canvas: CanvasElement;
+  let canvas: CanvasElement | null;
   if (typeof element.config.canvas === 'string') {
     if (env === ENV.worker) {
       // TODO
@@ -42,18 +39,10 @@ export const initCanvas = (element: Element): CanvasElement | null => {
   } else {
     canvas = element.config.canvas
       ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
-      : createCanvas(element.config.width, element.config.height);
+      : cache
+      ? createCanvas(element.config.width, element.config.height)
+      : null;
   }
 
-  if (!alpha && backgroundColor) {
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.save();
-      ctx.fillStyle = backgroundColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.restore();
-    }
-  }
-
-  return canvas;
+  element.$.canvas = canvas;
 };

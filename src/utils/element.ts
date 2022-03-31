@@ -5,6 +5,11 @@ export const bindElements = (father: Element, children: Element) => {
   // if father dont have a root element, father is the root
   children.$.root = father.$.root || father;
   children.$.floor = father.$.floor + 1;
+  if (children.config.cache && children.$.canvas) {
+    children.$.renderTarget = children;
+  } else {
+    children.$.renderTarget = father.$.renderTarget || father;
+  }
 };
 
 export const bindElementsLayer = (elementMap: { [key: string]: Element }, element: Element) => {

@@ -86,10 +86,17 @@ export const renderTo = (element: Element, target: Element, style: PaintConfig =
   const PR = element.PR;
 
   targetContext.save();
-  targetContext.translate(x * PR, y * PR);
-  if (elementContent) targetContext?.drawImage(elementContent, 0, 0); // 主绘制逻辑
+  if (element.config.cache) {
+    if (elementContent) {
+      targetContext.translate(x * PR, y * PR);
+      targetContext?.drawImage(elementContent, 0, 0); // 主绘制逻辑
+      targetContext.restore();
+    }
+  } else {
+    const renderTarget = element.$.renderTarget || element;
+    updateElementTree(element);
+  }
   element.$.processSet.forEach((process) => process(target)); // 后处理
-  targetContext.restore();
 
   element.$.processSet.clear();
 };
@@ -150,7 +157,9 @@ export const directUpdate = (element: Element, target: Element) => {
   for (let index = 0; index < positionSnapshots.length; index += 1) {
     const props = propsSnapshots[index];
     updateProps(element, props);
-    updateElementTree(element);
+    if (element.config.cache) {
+      updateElementTree(element);
+    }
 
     const style = positionSnapshots[index];
     const { x = 0, y = 0 } = style;

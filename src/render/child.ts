@@ -11,13 +11,11 @@ export default class ChildProxy<T> {
     this.element = element;
   }
 
-  rotate({ angle: number = 0 }) {
-    return this;
-  }
-
   updateProps(props: T, config?: ElementConfigExtend) {
     updateProps(this.element, props);
-    updateElementTree(this.element);
+    if (this.element.config.cache) {
+      updateElementTree(this.element);
+    }
     return this;
   }
 

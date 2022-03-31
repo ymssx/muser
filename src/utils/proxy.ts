@@ -3,8 +3,6 @@ import ChildProxy, { addChildList } from '../render/child';
 import { bindTree, bindElements } from './element';
 import { CanvasElement, Data } from '../const/common';
 import { initCanvas } from '../utils/canvas';
-import { hasChangeState } from '../render/updateCheck';
-import { StaleStatus } from '../const/render';
 
 /**
  * a proxy of origin component
@@ -135,27 +133,4 @@ export const setChildProxy = (element: Element) => {
     },
   });
   return element.childs;
-};
-
-export const setCanvasProxy = (element: Element): CanvasElement => {
-  element.$.canvas = initCanvas(element);
-
-  Object.defineProperty(element, 'canvas', {
-    // proxy of canvas, returns father's canvas if 'config.cache' is false
-    set(canvas: CanvasElement) {
-      element.$.canvas = canvas;
-    },
-    get(): CanvasElement {
-      if (!element.config.cache) {
-        if (element.$.father) {
-          return element.$.father.canvas;
-        } else {
-          throw new Error('Root element must have a canvas instance');
-        }
-      }
-      return element.$.canvas as CanvasElement;
-    },
-  });
-
-  return element.canvas;
 };
