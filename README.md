@@ -29,39 +29,34 @@ yarn add muser
 ## Usage
 
 ```js
-import { Element, useElement } from 'muser';
+import { Element, useElement, Brush } from 'muser';
 import ChildrenElement from 'src/components/children-element';
 
-export default class HelloWord extends Element {
+export default class App extends Element<{ value: string }> {
   state = { width: 10, color: 'green' };
 
-  render({ state, props }) {
+  render({ state, props }: App) {
     const child = useElement(ChildrenElement, {
       width: 100,
       height: 100,
-      key: 'child-element',
+      key: 'key-of-child-element',
     });
 
-    return [
-      // re-render when 'width' and 'value' was changed
-      (context) => {
-        const { width } = state;
-        const { value } = props;
+    // re-render when 'width' or 'value' or 'color' was changed
+    return ({ rect }: Brush) => {
+      const { width, color } = state;
+      const { value } = props;
 
-        context.fillRect(0, 0, width, width);
-        child({ value })
-          .paste({  x: 0, y: 0 });
-      },
-      // re-render when 'color' was changed
-      (context) => {
-        const { color } = state;
+      rect([0, 0, width, width], { fillStyle: color });
 
-        context.fillStyle = color;
-        context.fillRect(0, 0, width, width);
-      },
-    ];
+      child({ value })
+        .paste({  x: 0, y: 0 });
+    };
   }
 }
+
+const app = new App({ width: 100, height: 100 });
+app.init({ value: 'hello world!' });
 ```
 
 ## Document

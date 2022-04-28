@@ -1,6 +1,7 @@
 import { CanvasElement } from '../const/common';
 import Element from '../element';
 import env, { ENV } from './env';
+import { listenEvent } from '../event/index';
 
 export const createCanvas = (width: number, height: number): CanvasElement => {
   const PR = window.devicePixelRatio;
@@ -43,6 +44,11 @@ export const initCanvas = (element: Element): CanvasElement | null => {
     canvas = element.config.canvas
       ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
       : createCanvas(element.config.width, element.config.height);
+  }
+
+  // listen to mouse event if canvas is truely DOM
+  if (element.config.canvas instanceof HTMLCanvasElement) {
+    listenEvent(element);
   }
 
   if (!alpha && backgroundColor) {

@@ -207,6 +207,12 @@ export default function getBrush(element: Element) {
         }
       });
     },
+
+    image(image: CanvasImageSource | OffscreenCanvas, [x, y, w, h]: Position, style: RenderStyle) {
+      return renderWithStyle(style, (ctx) => {
+        ctx.drawImage(image, getSizeOfWidth(x), getSizeOfHeight(y), getSizeOfWidth(w), getSizeOfHeight(h));
+      });
+    },
   };
 }
 

@@ -1,13 +1,14 @@
 import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
-import { renderSlot } from './render/render';
+import { renderSlot, updateElementTree } from './render/render';
 import { getPropsProxy, setChildProxy, setCanvasProxy } from './utils/proxy';
 import { setState, smoothState, infiniteState, reactiveState } from './render/state';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
 import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';
 import getBrush, { Brush } from './canvas-api/index';
+import { updateProps } from './render/updateCheck';
 
 export default abstract class Element<T extends Object = Object> {
   /**
@@ -72,6 +73,11 @@ export default abstract class Element<T extends Object = Object> {
 
   get PR() {
     return window.devicePixelRatio;
+  }
+
+  init(props: T) {
+    updateProps(this, props || {});
+    updateElementTree(this);
   }
 
   constructor(config: ElementConfigExtend) {
