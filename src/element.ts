@@ -9,6 +9,7 @@ import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';
 import getBrush, { Brush } from './canvas-api/index';
 import { updateProps } from './render/updateCheck';
+import { bindCanvas } from './utils/canvas';
 
 export default abstract class Element<T extends Object = Object> {
   /**
@@ -78,6 +79,12 @@ export default abstract class Element<T extends Object = Object> {
   init(props: T) {
     updateProps(this, props || {});
     updateElementTree(this);
+  }
+
+  resize(width: number, height: number) {
+    if (this.config.canvas instanceof HTMLCanvasElement) {
+      bindCanvas(this.config.canvas, width, height);
+    }
   }
 
   constructor(config: ElementConfigExtend) {
