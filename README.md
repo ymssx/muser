@@ -8,13 +8,13 @@
 
 [中文](https://github.com/ymssx/muse/blob/master/README_CN.md)
 
-*This repo is still under development. If you encounter any issues, please feel free to contact me. Additionally, you are welcome to participate in the development together.*
-
 A Canvas Componentization Framework to Help You Build Complex UI.
 
 - Componentization
 - High Performance
 - Easy to Use
+
+*This repo is still under development. If you encounter any issues, please feel free to contact me. Additionally, you are welcome to participate in the development together.*
 
 ## Install
 
