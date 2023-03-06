@@ -68,5 +68,5 @@ export default class HelloWord extends Element {
 
 ## Document
 
-[See Document](https://github.com/ymssx/muse/blob/master/README_CN.md)
+[See Document](https://github.com/ymssx/muse/blob/master/DOC_EN.md)
 
