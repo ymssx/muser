@@ -1,4 +1,4 @@
-# Muse
+# Muser
 
 <a href="https://www.npmjs.com/package/muser">
   <img src="https://img.shields.io/npm/v/muser"/>

@@ -27,7 +27,7 @@ export default abstract class Element<T extends Object = Object> {
   public config: ElementConfig;
 
   // canvas render method
-  abstract render(element: Element<T>): RenderFunction | RenderFunction[];
+  abstract render(element: ThisType<T>): RenderFunction | RenderFunction[];
   public slot(name = 'default') {
     renderSlot(this, name);
   }
@@ -51,7 +51,7 @@ export default abstract class Element<T extends Object = Object> {
   }
 
   /**
-   * infinitly increase the state with steps
+   * infinity increase the state with steps
    */
   public infiniteState(newState: Data) {
     return infiniteState(newState, this);
