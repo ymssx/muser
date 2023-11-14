@@ -82,7 +82,7 @@ Muse是一个组件化的框架，这意味着我们可以轻松的引用其它�
 我们需要对组件进行修改：
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   // 在这里引用其它组件，并指定尺寸
@@ -122,7 +122,7 @@ Muse是一个数据驱动的框架，当数据更新时，我们会自动驱使�
 按照我们的目标，我们需要让“田”字积木缓缓落下。在组件`Container`中，我们在子组件实例的`paste`方法中指定了粘贴的位置`(0, 0)`，现在我们做以下改造：
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   block = new Block({ width: 100, height: 100 });
@@ -173,7 +173,7 @@ class Container extends Element {
 最外层的容器`Container`需要挂载到一个真实的`Canvas`元素上才能生效。依照下面的代码，你需要手动给它指定一个`HTMLCanvasElement`节点，同时设置它的绘制范围。
 
 ```ts
-import { Muse } from 'muse';
+import { Muse } from 'muser';
 import Container from 'src/components/container';
 
 const app = new Muse([
@@ -198,7 +198,7 @@ app.render();
 在Muse中，我们可以轻松支持这一模式，仅仅需要新增一个文件：
 
 ```js
-import { WorkerBridge } from 'muse';
+import { WorkerBridge } from 'muser';
 
 const canvas = document.querySelector('#main');
 const bridge = new WorkerBridge(

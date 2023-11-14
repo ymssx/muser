@@ -76,7 +76,7 @@ Let's reference the `Block` component in the initial `Container` component!
 We need to modify the component:
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   // Here, we refer to other components and specify their sizes
@@ -116,7 +116,7 @@ Each component has its own internal state, which we maintain using a `State` obj
 According to our goal, we need to slowly slide the "O" tetromino down. In the `Container` component, we've specified the paste position for the child component as `(0, 0)`. Now, let's modify this by animating the "O" tetromino:  
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   block = new Block({ width: 100, height: 100 });
@@ -167,7 +167,7 @@ During this process, because the internal state changes, the `Container` compone
 The outermost container `Container` needs to be mounted on a real `Canvas` node to take effect. Using the following code, you'll need to manually specify an `HTMLCanvasElement` node for it and set its drawing range.
 
 ```ts
-import { Muse } from 'muse';
+import { Muse } from 'muser';
 import Container from 'src/components/container';
 
 const app = new Muse([
@@ -192,7 +192,7 @@ Compared to DOM rendering, one of the great advantages of canvas application is 
 In Muse, we can easily support this mode by adding a new file:
 
 ```js
-import { WorkerBridge } from 'muse';
+import { WorkerBridge } from 'muser';
 
 const canvas = document.querySelector('#main');
 const bridge = new WorkerBridge(
