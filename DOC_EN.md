@@ -1,6 +1,6 @@
-# Muse <a href="https://www.npmjs.com/package/muser">   <img src="https://img.shields.io/npm/v/muser"/> </a>  [English](https://github.com/ymssx/muse/blob/master/README.md)
+# Muser <a href="https://www.npmjs.com/package/muser">   <img src="https://img.shields.io/npm/v/muser"/> </a>  [English](https://github.com/ymssx/muse/blob/master/README.md)
 
-Muse is a canvas-based component framework for building complex UIs. 
+Muser is a canvas-based component framework for building complex UIs. 
 
 - Componentization
 - High-performance
@@ -20,7 +20,7 @@ yarn add muser
 
 ## Usage
 
-To demonstrate how to use Muse to build your application, we'll create a simple Tetris game.
+To demonstrate how to use Muser to build your application, we'll create a simple Tetris game.
 
 ### Creating the First Component
 
@@ -69,14 +69,14 @@ In fact, when instantiating the `Block` component, we maintain an `Offscreen Can
 
 ### Component References
 
-Muse is a component framework, which means we can easily reference other components to build complex applications.
+Muser is a component framework, which means we can easily reference other components to build complex applications.
 
 Let's reference the `Block` component in the initial `Container` component!
 
 We need to modify the component:
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   // Here, we refer to other components and specify their sizes
@@ -109,14 +109,14 @@ After referencing the component in the manner described above, we can perform se
 
 ### Animating the View
 
-Muse is a data-driven framework, which means that when data is updated, the corresponding component's view is automatically updated. However, when a component doesn't need updating, we use the cached view in the `Offscreen Canvas` to prevent redundant rendering. In addition, we try to perform partial rendering of the component to maximize the efficiency of the framework.
+Muser is a data-driven framework, which means that when data is updated, the corresponding component's view is automatically updated. However, when a component doesn't need updating, we use the cached view in the `Offscreen Canvas` to prevent redundant rendering. In addition, we try to perform partial rendering of the component to maximize the efficiency of the framework.
 
 Each component has its own internal state, which we maintain using a `State` object. To make the view animate, we must first make the data animated.
 
 According to our goal, we need to slowly slide the "O" tetromino down. In the `Container` component, we've specified the paste position for the child component as `(0, 0)`. Now, let's modify this by animating the "O" tetromino:  
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   block = new Block({ width: 100, height: 100 });
@@ -167,7 +167,7 @@ During this process, because the internal state changes, the `Container` compone
 The outermost container `Container` needs to be mounted on a real `Canvas` node to take effect. Using the following code, you'll need to manually specify an `HTMLCanvasElement` node for it and set its drawing range.
 
 ```ts
-import { Muse } from 'muse';
+import { Muse } from 'muser';
 import Container from 'src/components/container';
 
 const app = new Muse([
@@ -189,10 +189,10 @@ Finally, use the `render` method on our `Muse` instance `app`, and the entire ap
 
 Compared to DOM rendering, one of the great advantages of canvas application is that we can use a `WebWorker` to perform off-screen rendering, ensuring that the rendering program will not block the main program.
 
-In Muse, we can easily support this mode by adding a new file:
+In Muser, we can easily support this mode by adding a new file:
 
 ```js
-import { WorkerBridge } from 'muse';
+import { WorkerBridge } from 'muser';
 
 const canvas = document.querySelector('#main');
 const bridge = new WorkerBridge(
