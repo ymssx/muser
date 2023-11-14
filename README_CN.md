@@ -33,7 +33,7 @@ yarn add muser
 首先我们创建一个容器组件。这个组件将在`render`方法中绘制一个实体矩形，作为我们应用的背景。
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   // 自定义组件的内容

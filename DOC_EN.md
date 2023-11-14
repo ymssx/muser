@@ -27,7 +27,7 @@ To demonstrate how to use Muse to build your application, we'll create a simple 
 First, we'll create a container component. This component will draw a solid rectangle in the `render` method as the background of our application.
 
 ```js
-import { Element } from 'muse';
+import { Element } from 'muser';
 
 class Container extends Element {
   // Custom component content
