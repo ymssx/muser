@@ -2,13 +2,16 @@ import { Element, Brush, useElement } from '@/muser/index';
 import Box from './box';
 
 export default class App extends Element<{ value: string }> {
-  state = { width: 200, color: 'green', top: 10 };
+  constructor(config) {
+    super(config);
+    this.state = { width: 200, color: 'green', top: 10 };
+  }
 
   created() {
     this.smoothState({ top: 500 }, 1000);
-    // setTimeout(() => {
-    //   this.setState({ top: 100, color: 'blue' });
-    // }, 1000);
+    setTimeout(() => {
+      this.setState({ color: 'blue' });
+    }, 500);
   }
 
   render({ data }: App) {
