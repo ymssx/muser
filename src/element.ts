@@ -20,6 +20,7 @@ export default abstract class Element<T extends Object = Object> {
 
   public props: T;
   public state: Data = {};
+  public data: Data = {};
   public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> } = {};
   public childMap: { [name: string]: Element } = {};

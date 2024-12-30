@@ -39,6 +39,6 @@ export default class Updater {
     }
     updateRoot.$.updater.needDirectRender = true;
     signUpdateChain(this.element, StaleStatus.Updater, updateRoot);
-    this.element.$.root?.$.updater.registUpdate();
+    (this.element.$.root?.$.updater || this).registUpdate();
   }
 }

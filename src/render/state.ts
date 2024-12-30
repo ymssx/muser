@@ -7,6 +7,9 @@ import { LifeCycleHooks } from '../lifecycle';
 
 export const reactiveState = function (element: Element) {
   const proxy = getStateProxy(element);
+  element.$.state = element.state || {};
+  element.state = proxy;
+  element.data = proxy;
   Object.defineProperty(element, 'state', {
     get() {
       return proxy;
