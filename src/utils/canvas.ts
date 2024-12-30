@@ -1,6 +1,7 @@
 import { CanvasElement } from '../const/common';
 import Element from '../element';
 import env, { ENV } from './env';
+import { listenEvent } from '../event/index';
 
 export const createCanvas = (width: number, height: number): CanvasElement => {
   const PR = window.devicePixelRatio;
@@ -24,22 +25,41 @@ export const bindCanvas = (canvas: CanvasElement, width: number, height: number)
   return canvas;
 };
 
-export const initCanvas = (element: Element<Object>): CanvasElement | null => {
-  if (!element.config?.cache) {
+export const initCanvas = (element: Element): CanvasElement | null => {
+  const { cache, alpha, backgroundColor } = element.config || {};
+  if (!cache) {
     return null;
   }
 
+  let canvas: CanvasElement;
   if (typeof element.config.canvas === 'string') {
     if (env === ENV.worker) {
       // TODO
       element.$.canvasName = element.config.canvas;
-      return createCanvas(element.config.width, element.config.height);
+      canvas = createCanvas(element.config.width, element.config.height);
     } else {
       throw new Error('Only in worker mode, type of "canvas" can be string');
     }
+  } else {
+    canvas = element.config.canvas
+      ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
+      : createCanvas(element.config.width, element.config.height);
   }
 
-  return element.config.canvas
-    ? bindCanvas(element.config.canvas, element.config.width, element.config.height)
-    : createCanvas(element.config.width, element.config.height);
+  // listen to mouse event if canvas is truely DOM
+  if (element.config.canvas instanceof HTMLCanvasElement) {
+    listenEvent(element);
+  }
+
+  if (!alpha && backgroundColor) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.save();
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+  }
+
+  return canvas;
 };

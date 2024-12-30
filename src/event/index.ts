@@ -13,10 +13,10 @@ interface ElementEvent {
   type?: EventTriggerType;
 }
 
-let MouseInSetOld = new Set<Element<Object>>();
-let MouseInSet = new Set<Element<Object>>();
+let MouseInSetOld = new Set<Element>();
+let MouseInSet = new Set<Element>();
 
-export const listenEvent = (element: Element<Object>) => {
+export const listenEvent = (element: Element) => {
   const canvas = element.canvas as HTMLCanvasElement;
 
   const addEvent = (eventName: keyof HTMLElementEventMap) => {
@@ -71,7 +71,7 @@ export const listenEvent = (element: Element<Object>) => {
 
 export type EventCallBack = (event: ElementEvent) => void;
 
-export const addEventListener = (element: Element<Object>, eventName: string, callback: EventCallBack) => {
+export const addEventListener = (element: Element, eventName: string, callback: EventCallBack) => {
   const map = element.$.eventMap;
   if (!map.has(eventName)) {
     map.set(eventName, new Set());
@@ -80,14 +80,14 @@ export const addEventListener = (element: Element<Object>, eventName: string, ca
   set?.add(callback);
 };
 
-export const trigerEvent = (element: Element<Object>, event: ElementEvent) => {
+export const trigerEvent = (element: Element, event: ElementEvent) => {
   const map = element.$.eventMap;
   if (map.has(event?.name)) {
     map.get(event.name)?.forEach((callback) => callback(event));
   }
 };
 
-export const broadcastEvent = (element: Element<Object>, event: ElementEvent) => {
+export const broadcastEvent = (element: Element, event: ElementEvent) => {
   const { x, y } = event;
   const childList = element.$.childList || [];
 
@@ -95,7 +95,7 @@ export const broadcastEvent = (element: Element<Object>, event: ElementEvent) =>
   for (const child of childList) {
     const { width, height } = child.config;
     for (const snap of child.$.positionSnapshots || []) {
-      const [_, { x: styleX = 0, y: styleY = 0 }] = snap;
+      const { x: styleX = 0, y: styleY = 0 } = snap;
       const currentX = styleX;
       const currentY = styleY;
       if (x >= currentX && x <= currentX + width && y >= currentY && y <= currentY + height) {

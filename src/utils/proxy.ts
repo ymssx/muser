@@ -9,14 +9,14 @@ import { StaleStatus } from '../const/render';
 /**
  * a proxy of origin component
  */
-export const getChildProxy = (element: Element<Object>) => {
+export const getChildProxy = (element: Element) => {
   return new Proxy(
     {},
     {
       get(_, name: string) {
         const { childMap, father } = element.$;
 
-        let target: Element<Object>;
+        let target: Element;
         if (childMap.hasOwnProperty(name)) {
           target = childMap[name];
         } else if (element.hasOwnProperty(name)) {
@@ -47,7 +47,7 @@ export const getChildProxy = (element: Element<Object>) => {
   );
 };
 
-export const getPropsProxy = (element: Element<Object>) => {
+export const getPropsProxy = (element: Element) => {
   return new Proxy(
     {},
     {
@@ -83,7 +83,7 @@ export const getPropsProxy = (element: Element<Object>) => {
   );
 };
 
-export const getStateProxy = (element: Element<Object>) => {
+export const getStateProxy = (element: Element) => {
   return new Proxy(
     {},
     {
@@ -118,34 +118,10 @@ export const getStateProxy = (element: Element<Object>) => {
   );
 };
 
-export const reactiveState = (element: Element<Object>) => {
-  const proxy = getStateProxy(element);
-  Object.defineProperty(element, 'state', {
-    get() {
-      return proxy;
-    },
-    set(newState) {
-      element.$.state = newState;
-    },
-  });
-};
-
-export const setState = (newState: Data = {}, element: Element<Object>) => {
-  if (hasChangeState(element, newState)) {
-    element.$.state = {
-      ...element.$.state,
-      ...newState,
-    };
-
-    element.$.stale = StaleStatus.Updater;
-    element.$.updater.update();
-  }
-};
-
-export const setChildProxy = (element: Element<Object>) => {
+export const setChildProxy = (element: Element) => {
   element.$.childs = getChildProxy(element);
   Object.defineProperty(element, 'childMap', {
-    set(elementMap: { [name: string]: Element<Object> }) {
+    set(elementMap: { [name: string]: Element }) {
       bindTree(elementMap, element);
       element.$.childMap = elementMap;
     },
@@ -161,7 +137,7 @@ export const setChildProxy = (element: Element<Object>) => {
   return element.childs;
 };
 
-export const setCanvasProxy = (element: Element<Object>): CanvasElement => {
+export const setCanvasProxy = (element: Element): CanvasElement => {
   element.$.canvas = initCanvas(element);
 
   Object.defineProperty(element, 'canvas', {

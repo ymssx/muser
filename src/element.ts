@@ -1,14 +1,17 @@
 import { Data, CanvasElement, RenderFunction } from './const/common';
 import { ElementConfig, ElementConfigExtend } from './const/element';
 import { Default } from './const/default';
-import { renderSlot } from './render/render';
-import { getPropsProxy, setChildProxy, setCanvasProxy, setState, reactiveState } from './utils/proxy';
+import { renderSlot, updateElementTree } from './render/render';
+import { getPropsProxy, setChildProxy, setCanvasProxy } from './utils/proxy';
+import { setState, smoothState, infiniteState, reactiveState } from './render/state';
 import { ElementPrivateProps, initElementPrivateProps } from './utils/element-private-props';
 import ChildProxy from './render/child';
 import { addEventListener, EventCallBack } from './event/index';
 import getBrush, { Brush } from './canvas-api/index';
+import { updateProps } from './render/updateCheck';
+import { bindCanvas } from './utils/canvas';
 
-export default abstract class Element<T extends Object> {
+export default abstract class Element<T extends Object = Object> {
   /**
    * private status of component
    * do not use '$' to name your component methods
@@ -17,26 +20,41 @@ export default abstract class Element<T extends Object> {
 
   public props: T;
   public state: Data = {};
-  public config: ElementConfig = Default.Element.config;
   public canvas: CanvasElement;
   public childs: { [name: string]: (props: Data, config?: ElementConfigExtend) => ChildProxy<Object> } = {};
-  public childMap: { [name: string]: Element<Object> } = {};
+  public childMap: { [name: string]: Element } = {};
   public brush: Brush;
+  public config: ElementConfig;
 
   // canvas render method
-  abstract render(element: Element<T>): RenderFunction | RenderFunction[];
+  abstract render(element: ThisType<T>): RenderFunction | RenderFunction[];
   public slot(name = 'default') {
     renderSlot(this, name);
   }
 
   // lifecycle methods
   created?(): void;
-  painted?(): void;
+  beforeRender?(): void;
+  rendered?(): void;
   updated?(): void;
   destroyed?(): void;
 
-  public setState(newProps: Data) {
-    return setState(newProps, this);
+  public setState(newState: Data) {
+    return setState(newState, this);
+  }
+
+  /**
+   * smoothly change the state in during time
+   */
+  public smoothState(newState: Data, during: number) {
+    return smoothState(newState, during, this);
+  }
+
+  /**
+   * infinity increase the state with steps
+   */
+  public infiniteState(newState: Data) {
+    return infiniteState(newState, this);
   }
 
   public addEventListener(eventName: string, callback: EventCallBack) {
@@ -50,16 +68,27 @@ export default abstract class Element<T extends Object> {
   }
 
   get context() {
-    return this.canvas.getContext('2d') as CanvasRenderingContext2D;
+    const { alpha } = this.config;
+    return this.canvas.getContext('2d', { alpha }) as CanvasRenderingContext2D;
   }
 
   get PR() {
     return window.devicePixelRatio;
   }
 
+  init(props: T) {
+    updateProps(this, props || {});
+    updateElementTree(this);
+  }
+
+  resize(width: number, height: number) {
+    if (this.config.canvas instanceof HTMLCanvasElement) {
+      bindCanvas(this.config.canvas, width, height);
+    }
+  }
+
   constructor(config: ElementConfigExtend) {
     Object.defineProperty(this, '$', { writable: false }); // lock private property '$'
-
     this.config = {
       ...Default.Element.config,
       ...config,

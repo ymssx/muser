@@ -2,7 +2,7 @@ import { StaleStatus } from '../const/render';
 import { Data } from '../const/common';
 import Element from '../element';
 
-export const updateProps = (element: Element<Object>, props: Object = {}) => {
+export const updateProps = (element: Element, props: Object = {}) => {
   if (hasChangeProps(element, props)) {
     element.$.stale = StaleStatus.Updater;
     element.$.props = {
@@ -12,7 +12,7 @@ export const updateProps = (element: Element<Object>, props: Object = {}) => {
   }
 };
 
-export const isChildsStale = (element: Element<Object>) => {
+export const isChildsStale = (element: Element) => {
   for (const name in element.$.childList) {
     const el = element.$.childList[name];
     if (el.$.stale) {
@@ -22,7 +22,7 @@ export const isChildsStale = (element: Element<Object>) => {
   return false;
 };
 
-export const hasChangeProps = function (element: Element<Object>, props: Object) {
+export const hasChangeProps = function (element: Element, props: Object) {
   if (!element.$.hasInit) return true;
   if (!element.config.cache) return true;
 
@@ -42,7 +42,7 @@ export const hasChangeProps = function (element: Element<Object>, props: Object)
   return flag;
 };
 
-export const hasChangeState = (element: Element<Object>, state: Data) => {
+export const hasChangeState = (element: Element, state: Data) => {
   if (!element.$.hasInit) return true;
 
   const oldState = element.$.state as Data;
