@@ -33,50 +33,52 @@ export const updateElementTree = (element: Element, props?: Data) => {
   }
 
   // if component is not stale, skip rerender
-  if (element.$.stale) {
-    // init some props before rendering
-    setCurrentRenderElement(element);
-    element.$.isAnsysingDependence = true;
-    element.$.isCollectingChilds = true;
-
-    const { context } = element;
-
-    let renderList: number[];
-    if (!element.$.hasInit) {
-      const renderRes = element.render(element);
-      element.$.renderFunctions = Array.isArray(renderRes) ? renderRes : [renderRes];
-      renderList = [];
-      for (let index = 0; index < element.$.renderFunctions.length; index += 1) {
-        renderList.unshift(index);
-      }
-    } else {
-      renderList = Array.from(element.$.updateRenderFunctions);
-      element.$.updateRenderFunctions?.clear();
-    }
-
-    for (let i = renderList.length - 1; i >= 0; i -= 1) {
-      const index = renderList[i];
-      element.$.currentRenderFunctionIndex = index;
-      element.$.useElementIndex = 0;
-      element.$.fatherRenderFunctionIndex = element.$.father?.$.currentRenderFunctionIndex || 0;
-
-      const renderFunction = element.$.renderFunctions[index];
-      context.save();
-      if (renderFunction) {
-        renderFunction(element.brush);
-      }
-      context.restore();
-    }
-
-    element.$.isAnsysingDependence = false;
-    element.$.isCollectingChilds = false;
-    element.$.stale = StaleStatus.UnStale;
-    element.$.hasInit = true;
-    element.$.currentRenderFunctionIndex = -1;
-    exitCurrentRenderElement();
-
-    element.$.lifecycle.afterUpdate();
+  if (!element.$.stale) {
+    return;
   }
+
+  // init some props before rendering
+  setCurrentRenderElement(element);
+  element.$.isAnsysingDependence = true;
+  element.$.isCollectingChilds = true;
+
+  const { context } = element;
+
+  let renderList: number[];
+  if (!element.$.hasInit) {
+    const renderFunctions = element.render(element);
+    element.$.renderFunctions = Array.isArray(renderFunctions) ? renderFunctions : [renderFunctions];
+    renderList = [];
+    for (let index = 0; index < element.$.renderFunctions.length; index += 1) {
+      renderList.unshift(index);
+    }
+  } else {
+    renderList = Array.from(element.$.updateRenderFunctions);
+    element.$.updateRenderFunctions?.clear();
+  }
+
+  for (let i = renderList.length - 1; i >= 0; i -= 1) {
+    const index = renderList[i];
+    element.$.currentRenderFunctionIndex = index;
+    element.$.useElementIndex = 0;
+    element.$.fatherRenderFunctionIndex = element.$.father?.$.currentRenderFunctionIndex || 0;
+
+    const renderFunction = element.$.renderFunctions[index];
+    context.save();
+    if (renderFunction) {
+      renderFunction(element.brush);
+    }
+    context.restore();
+  }
+
+  element.$.isAnsysingDependence = false;
+  element.$.isCollectingChilds = false;
+  element.$.stale = StaleStatus.UnStale;
+  element.$.hasInit = true;
+  element.$.currentRenderFunctionIndex = -1;
+  exitCurrentRenderElement();
+
+  element.$.lifecycle.afterUpdate();
 };
 
 export const renderTo = (element: Element, target: Element, style: PaintConfig = { x: 0, y: 0 }) => {
